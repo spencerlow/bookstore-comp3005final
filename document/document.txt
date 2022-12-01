@@ -19,3 +19,5 @@ const pool = new Pool({
 })
 
 Now you have to make a table, and entries for test.
+
+8. Start server with {node index.js}
