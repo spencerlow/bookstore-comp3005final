@@ -1,2 +1,21 @@
-test 2
-3
+1. Install PostgreSQL 15.1 for Windows {https://www.enterprisedb.com/downloads/postgres-postgresql-downloads}
+2. Go to node-api-postgres dir
+3. install Node.js through google
+4. {npm init -y}
+5. Install Express for server, node-postgres for connection {npm i express pg}
+6. PGADMIN Object -> Create -> Database -> Database:"bookstore"
+7. Check properties of server group "postgresql14"
+
+
+UPDATE queiries.js with it.
+
+const Pool = require('pg').Pool
+const pool = new Pool({
+  user: 'postgres',
+  host: 'localhost',
+  database: 'bookstore',
+  password: 'Kaushik12!',
+  port: 5432,
+})
+
+Now you have to make a table, and entries for test.
