@@ -21,3 +21,9 @@ const pool = new Pool({
 Now you have to make a table, and entries for test.
 
 8. Start server with {node index.js}
+
+
+
+
+
+https://stackoverflow.com/questions/52104833/how-to-create-table-after-first-creating-a-database-with-node-and-pg
