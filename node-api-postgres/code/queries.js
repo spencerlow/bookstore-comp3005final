@@ -3,7 +3,7 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'bookstore',
-  password: 'Kaushik12!',
+  password: 'password',
   port: 5432,
 })
 const pug = require('pug');
