@@ -1,0 +1,19 @@
+doctype html
+html(lang='en')
+
+html
+    head
+        title SP Bookstore - Home
+        
+body
+    div#main
+        br
+        br
+        h1 SP Bookstore
+        div#list
+            h2 List of Books:
+            div#info
+                each book in books
+                    a(href="/book/" + book.isbn) #{book.isbn} #{book.name} 
+                    br
+                br
