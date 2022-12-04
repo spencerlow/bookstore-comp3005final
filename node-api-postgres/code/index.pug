@@ -14,6 +14,6 @@ body
             h2 List of Books:
             div#info
                 each book in books
-                    a(href="/book/" + book.isbn) #{book.isbn} #{book.name} 
-                    br
+                    ul
+                    p #{book.isbn} #{book.name} #{book.authors} #{book.genres} #{book.page_num} #{book.stockquantity} #{book.price} 
                 br

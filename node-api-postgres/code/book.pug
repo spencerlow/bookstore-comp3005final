@@ -10,10 +10,15 @@ body
         br
         br
         h1 SP Bookstore
-        div#list
-            h2 List of Books:
-            div#info
-                each book in books
-                    a(href="/book/" + book.isbn) #{book.isbn} #{book.name} 
-                    br
-                br
+        h2 ISBN: #{book.isbn} 
+        p Bookname: #{book.name} 
+        p Author(s): #{book.authors}
+        p Publisher: #{book.pid}
+        p Genre(s): #{book.genres}
+        p Page Numbers: #{book.page_num}
+        br
+        br
+        p Stock: #{book.stockquantity}
+        p Price: #{book.price}
+        a(href="/addCart/" + book.isbn) Add to Cart
+
