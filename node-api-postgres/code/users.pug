@@ -1,0 +1,41 @@
+doctype html
+html
+    head
+        title users
+        
+        
+    body
+        div
+            h1 Change user
+            div#dropMenu current user:
+                select(id='userSelect') Test
+                    h1 test
+                        each user in users
+                            option #{user.uid}
+                button(type="button" id="submit") Submit
+                br
+                br
+                table(border='2')
+                    tr
+                        th uid 
+                        th userbilling 
+                        th usershipping
+                        th account_type 
+                        th cartid 
+                        th storeid 
+                    
+                    each user in users
+                        tr
+                            td
+                                p #{user.uid} 
+                            td    
+                                p #{user.userbilling}
+                            td    
+                                p #{user.usershipping}
+                            td 
+                                p #{user.account_type}
+                            td  
+                                p #{user.cartid}
+                            td
+                                p #{user.storeid}
+        script(type="text/javascript" src="./changeUser.js")
