@@ -34,31 +34,6 @@ pool.query(fs.readFileSync('./mock_data.sql').toString(), (err, result) =>{
 });
 */
 
-const getBooks = (request, response) => {
-  pool.query('SELECT * FROM public.book ORDER BY isbn ASC', (error, results) => {
-    if (error) {
-      throw error
-    }
-    (results.rows).forEach(function (element) {
-      const query = {
-        text: 'SELECT author,genre FROM public.book_records WHERE isbn = $1',
-        values: [element.isbn],
-      }
-      pool.query(query, (error, results2) => {
-        if (error) {
-          throw error
-        }
-        element.authors = [];
-        element.genres = [];
-        results2.rows.forEach(function (element2) {
-          element.authors.push(element2.author);
-          element.genres.push(element2.genre);
-        });
-        
-        console.log(element)
-      })
-      
-
 // const getBooks = async (request, response) => {
 //   let results = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC')
 //   let data = pug.renderFile("index.pug",{books:results.rows});
@@ -103,11 +78,6 @@ const getBooks = async (request, response) => {
       values: [book.isbn],
     }
     let auth_gen = await pool.query(query);
-    // console.log("RESULT",{
-    //   ...book,
-    //   authors:auth_gen.rows.map(element=>element.author),
-    //   genres:auth_gen.rows.map(element=>element.genre)
-    // })
     result = ({
       ...book,
       authors:auth_gen.rows.map(element=>element.author),
@@ -151,13 +121,13 @@ const getUsers = (request, response) => {
     response.statusCode = 200;
     response.send(data);
   })
-}
-  let results = await pool.query(query);
+
+  let results = pool.query(query);
   console.log(results.rows)
   response.statusCode = 200;
   response.send(results.rows)
-
 }
+
 // const getBookInfo = (request, response) => {
 //   const query = {
 //     text: 'SELECT * FROM public.book WHERE isbn = $1',
