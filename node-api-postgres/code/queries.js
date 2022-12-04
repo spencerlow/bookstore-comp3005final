@@ -8,6 +8,32 @@ const pool = new Pool({
 })
 const pug = require('pug');
 
+const fs = require('fs');
+//let file = fs.readFileSync('./ddl.sql').toString();
+
+//raw buffer is returned
+console.log(fs.readFileSync('./ddl.sql'));
+//buffer toString
+console.log(fs.readFileSync('./ddl.sql').toString());
+
+//creating tables
+pool.query(fs.readFileSync('./ddl.sql').toString(), (err, result) =>{  
+  if (err){
+    throw err
+  }
+  console.log("success")
+});
+
+//mock data
+/*
+pool.query(fs.readFileSync('./mock_data.sql').toString(), (err, result) =>{  
+  if (err){
+    throw err
+  }
+  console.log("success")
+});
+*/
+
 const getBooks = (request, response) => {
   pool.query('SELECT * FROM public.book ORDER BY isbn ASC', (error, results) => {
     if (error) {
@@ -53,10 +79,24 @@ const getBookInfo = (request, response) => {
     let data = pug.renderFile("book.pug",{book:results.rows[0]});
     response.statusCode = 200;
     response.send(data)
+    
+  })
+}
+
+const getUsers = (request, response) => {
+  pool.query('SELECT * FROM public.users ORDER BY uid ASC', (error, results) => {
+    if (error) 
+    {
+      throw error
+    }
+    let data = pug.renderFile("users.pug",{users:results.rows});
+    response.statusCode = 200;
+    response.send(data);
   })
 }
 
 module.exports = {
+  getUsers,
   getBooks,
   getBookInfo
 }

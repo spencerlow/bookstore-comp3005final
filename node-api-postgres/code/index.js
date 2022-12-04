@@ -12,14 +12,31 @@ app.use(
   })
 )
 
+app.use(express.static('../code'));
+
+
 app.get('/', async(request, response) => {
     response.redirect("/books");
   })
 
 
+app.get('/users',db.getUsers)
 app.get('/books', db.getBooks)
-
 app.get('/book/:isbn', db.getBookInfo)
+
+app.get('/users/user=:n', changeUser)
+
 app.listen(port, () => {
 console.log(`App running on port localhost:${port}.`)
 })
+
+function changeUser(req, res)
+{
+  console.log('test');
+  console.log(req.url.split('=')[0]);
+  console.log(req.url.split('=')[1]);
+  app.locals.uid = req.url.split('=')[1];
+  console.log(app.locals.uid);
+  res.status(200).redirect("http://localhost:3000/users");
+  return
+}

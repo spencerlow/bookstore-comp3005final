@@ -1,15 +1,21 @@
+insert into Bookstore
+values ('1','SP Books');
+
+-- uid userbilling usershipping account_type cartID storeID
+insert into Users
+values ('0','warehouse','warehouse','owner','0','1');
+values ('1','baseline 12','baseline 13','customer','1','1');
+
 insert into publisher
-values
-('1','5282 Manufacturers Avenue','Magpie@godaddy.com','6388473465700886'),
+values ('1','5282 Manufacturers Avenue','Magpie@godaddy.com','6388473465700886'),
 ('2','064 Pine View Hill','Stork@gnu.org','56102310415599481'),
 ('3','89 Miller Parkway','Python@latimes.com','3556138670716604'),
 ('4','1 Butterfield Terrace','Duck@virginia.edu','3547701303889122'),
-('5','36979 3rd Pass','Skimmer@microsoft.com','3556697747519895')
+('5','36979 3rd Pass','Skimmer@microsoft.com','3556697747519895');
 
-ISBN NAME stockQuantity royalty lastMonthSales page_Num price pID
+-- ISBN NAME stockQuantity royalty lastMonthSales page_Num price pID
 insert into book
-Values
-('671357199-9','Anhalt','19','4','8','407','22.65','1'),
+Values ('671357199-9','Anhalt','19','4','8','407','22.65','1'),
 ('744386732-8','Graedel','17','3','8','36','10.5','1'),
 ('331544036-0','Talmadge','20','7','8','100','10.82','1'),
 ('440671427-8','Jackson','20','7','8','378','13.26','1'),
@@ -28,19 +34,11 @@ Values
 ('535793587-4','Lakeland','10','5','8','345','10.66','5'),
 ('235310396-0','Green Ridge','16','4','8','88','22.76','5'),
 ('658147303-0','Blaine','20','9','8','434','23.33','5'),
-('260911225-4','Elka','14','5','8','312','20.89','5')
+('260911225-4','Elka','14','5','8','312','20.89','5');
 
-
-
-insert into Bookstore
-values
-('1','SP Books')
-
-
-pid,phonenumber
+-- pid,phonenumber
 insert into Has_numbers
-values
-('2','6865660250'),
+values ('2','6865660250'),
 ('1','2534205697'),
 ('2','8994742155'),
 ('3','3547420777'),
@@ -49,13 +47,16 @@ values
 ('5','1743775869'),
 ('4','2413714624'),
 ('1','2725457997'),
-('2','2479192187')
+('2','2479192187');
 
-isbn orderID phone_numbers author genre 
-NEW ASSUMPT, EACH BOOK HAS A DIRECT NUMBER TO A CERTAIN DEPARTMENT OF ITS PUBLISHER
+-- orderID cur_location uid orderBilling orderShipping
+insert into Orders
+values ('0','warehouse','0','warehouse','warehouse');
+
+-- isbn orderID phone_numbers author genre 
+-- NEW ASSUMPT, EACH BOOK HAS A DIRECT NUMBER TO A CERTAIN DEPARTMENT OF ITS PUBLISHER
 insert into Book_records
-values
-('671357199-9','0','2534205697','Fitzgerld','Mystery'),
+values ('671357199-9','0','2534205697','Fitzgerld','Mystery'),
 ('671357199-9','0','2534205697','Scotty','Mystery'),
 ('744386732-8','0','1083163697','Fitzgerld','Mystery'),
 ('744386732-8','0','1083163697','Scotty','Mystery'),
@@ -82,18 +83,13 @@ values
 ('535793587-4','0','7258307915','Bahl','Comedy'),
 ('235310396-0','0','7258307915','St. Pierre','Documentary'),
 ('658147303-0','0','1743775869','Pollok','Crime'),
-('260911225-4','0','1743775869','Cutsforth','Action')
+('260911225-4','0','1743775869','Cutsforth','Action');
 
 
-uid userbilling usershipping account_type cartID storeID
-insert into Users
-values
-('0','warehouse','warehouse','owner','0','1')
 
+
+/*
 insert into Order_contents
 values
+*/
 
-orderID cur_location uid orderBilling orderShipping
-insert into Orders
-values
-('0','warehouse','0','warehouse','warehouse')
