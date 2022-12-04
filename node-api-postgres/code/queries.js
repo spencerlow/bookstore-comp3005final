@@ -9,14 +9,6 @@ const pool = new Pool({
 })
 
 
-function makeDBQuery(query) {
-  return new Promise((resolve, reject) => {
-    pool.query(query, function (err, result) {
-      err ? reject(err) : resolve(result);
-    });
-  });
-}
-
 // const getBooks = async (request, response) => {
 //   let results = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC')
 //   let data = pug.renderFile("index.pug",{books:results.rows});
