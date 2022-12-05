@@ -92,6 +92,14 @@ const getBooks = async (request, response) => {
   });
 }
 
+const addCart = async (request, response) => {
+  const query = {
+    text: 'INSERT into public.cart VALUES ($1,$2,$3)',
+    values: [0,request.params.isbn,1],
+  }
+  let results = await pool.query(query);
+  //console.log(request.params.isbn," Added to cart of User",1)
+}
 
 
 const getBookInfo = async (request, response) => {
@@ -165,5 +173,6 @@ const getUsers = (request, response) => {
 module.exports = {
   getUsers,
   getBooks,
-  getBookInfo
+  getBookInfo,
+  addCart
 }
