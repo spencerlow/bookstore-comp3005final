@@ -15,7 +15,7 @@ body
             div#info
                 each book in books
                     ul
-                    <p> ISBN: #{book.isbn} "#{book.name}" by #{book.authors} | Genres: #{book.genres} | Pages ##{book.page_num} | $#{book.price} In Stock: #{book.stockquantity} <a href="/addCart/" + book.isbn> Add to Cart </a></p>
+                    <p> ISBN: #{book.isbn} "#{book.name}" by #{book.authors} | Genres: #{book.genres} | Pages ##{book.page_num} | $#{book.price} In Stock: #{book.stockquantity} <a href="/addCart/#{book.isbn}"> Add to Cart </a></p>
                     
                 br
 
