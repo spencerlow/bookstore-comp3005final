@@ -68,8 +68,8 @@ create table IF NOT EXISTS Orders
 
 create table IF NOT EXISTS Order_contents
 	(
-		orderID INT UNIQUE NOT NULL,
-		ISBN VARCHAR(11) UNIQUE NOT NULL,
+		orderID INT NOT NULL,
+		ISBN VARCHAR(11) NOT NULL,
 		orderQuantity INT NOT NULL,
 		primary key (orderID,ISBN),
 		foreign key (orderID) references Orders (orderID),
