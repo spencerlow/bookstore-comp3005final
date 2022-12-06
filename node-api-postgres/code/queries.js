@@ -18,51 +18,21 @@ const fs = require('fs');
 //console.log(fs.readFileSync('./ddl.sql').toString());
 
 //creating tables
-pool.query(fs.readFileSync('../sql/ddl.sql').toString(), (err, result) =>{  
-  if (err){
-    throw err
-  }
-  console.log("success")
-});
+// pool.query(fs.readFileSync('../sql/ddl.sql').toString(), (err, result) =>{  
+//   if (err){
+//     throw err
+//   }
+//   console.log("success")
+// });
+async function databaseInit(req,res){
+  console.log("Initializing Database");
+  let ddl_insert = await pool.query(fs.readFileSync('../sql/ddl.sql').toString());
+  let dml_insert = await pool.query(fs.readFileSync('../sql/mock_data.sql').toString());
+}
 
+databaseInit();
 //mock data
 //await pool.query(fs.readFileSync('../sql/mock_data.sql').toString());
-
-
-// const getBooks = async (request, response) => {
-//   let results = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC')
-//   let data = pug.renderFile("index.pug",{books:results.rows});
-//   response.statusCode = 200;
-//   response.send(data)
-// }
-// const getBooks = async (request, response) => {
-//   let arr =[];
-//   let books = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC');
-//   (books.rows).forEach(async function (book) {
-//     const query = {
-//       text: 'SELECT author,genre FROM public.book_records WHERE isbn = $1',
-//       values: [book.isbn],
-//     }
-//     let auth_gen = await pool.query(query);
-//     book.authors = [];
-//     book.genres = [];
-//     //console.log("AUTH GEN",auth_gen.rows);
-//     console.log("Before",auth_gen.rows)
-//     auth_gen.rows.forEach(function (element2) {
-//       book.authors.push(element2.author);
-//       book.genres.push(element2.genre);
-//       arr.push(book)
-//       //console.log("Book",book)
-//     })
-//     console.log("After",auth_gen.rows)
-//     console.log("ARR",arr);
-
-//   });
-//   //let data = pug.renderFile("index.pug",{books:arr});
-//   response.statusCode = 200;
-//   response.send(arr)
-// }
-
 
 const getBooks = async (request, response) => {
   let books = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC');
@@ -89,7 +59,7 @@ const getBooks = async (request, response) => {
 const addCart = async (request, response) => {
   const query = {
     text: 'INSERT into public.cart VALUES ($1,$2,$3)',
-    values: [request.app.locals.currUID,request.params.isbn,1], //UPDATE WITH SPENCERS GET CURR USER FIX
+    values: [request.app.locals.currUID,request.params.isbn,1],
   }
   let results = await pool.query(query);
   //console.log(request.params.isbn," Added to cart of User",1)
@@ -105,7 +75,6 @@ const getBookInfo = async (request, response) => {
     if (error) {
       throw error
     }
-    //console.log(results.rows[0])
     let data = pug.renderFile("book.pug",{book:results.rows[0]});
     response.statusCode = 200;
     response.send(data)
@@ -115,7 +84,7 @@ const getBookInfo = async (request, response) => {
 const getCart = async (request, response) => {
   const query = {
     text: 'SELECT * FROM public.cart WHERE uid = $1',
-    values: [request.app.locals.currUID], //UPDATE WITH SPENCERS GET CURR USER FIX
+    values: [request.app.locals.currUID], 
   }
   let books = await pool.query(query);
   (books.rows) = Promise.all(books.rows.map(async book => {
@@ -157,40 +126,6 @@ const getUsers = (request, response) => {
   // response.send(results.rows)
 }
 
-// const getBookInfo = (request, response) => {
-//   const query = {
-//     text: 'SELECT * FROM public.book WHERE isbn = $1',
-//     values: [request.params.isbn],
-//   }
-//   pool.query(query, (error, results) => {
-//     if (error) {
-//       throw error
-//     }
-//     (results.rows).forEach(function (element) {
-//       const query = {
-//         text: 'SELECT author,genre FROM public.book_records WHERE isbn = $1',
-//         values: [element.isbn],
-//       }
-//       pool.query(query, (error, results2) => {
-//         if (error) {
-//           throw error
-//         }
-//         element.authors = [];
-//         element.genres = [];
-//         results2.rows.forEach(function (element2) {
-//           element.authors.push(element2.author);
-//           element.genres.push(element2.genre);
-//         });
-//         console.log(element)
-        
-//         let data = pug.renderFile("book.pug",{book:results.rows[0]});
-//         response.statusCode = 200;
-//         response.send(data);
-//       })
-//     })
-
-//   })
-// }
 module.exports = {
   getUsers,
   getBooks,
