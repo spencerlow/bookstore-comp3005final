@@ -18,6 +18,7 @@ app.get('/', async(request, response) => {
     response.redirect("/books");
   })
 
+// local variable for current user's UID
 app.locals.currUID = 0;
 
 app.get('/books', db.getBooks)
@@ -32,6 +33,8 @@ app.listen(port, () => {
 console.log(`App running on port localhost:${port}.`)
 })
 
+
+// change currUID based on url
 function changeUser(req, res)
 {
   console.log('test');
