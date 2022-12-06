@@ -18,7 +18,7 @@ const fs = require('fs');
 //console.log(fs.readFileSync('./ddl.sql').toString());
 
 //creating tables
-pool.query(fs.readFileSync('./ddl.sql').toString(), (err, result) =>{  
+pool.query(fs.readFileSync('../sql/ddl.sql').toString(), (err, result) =>{  
   if (err){
     throw err
   }

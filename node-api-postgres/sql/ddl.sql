@@ -2,7 +2,7 @@
 +needs reordering, just putting outline here first
 +the types are temporary here
 */
-create table Publisher
+create table IF NOT EXISTS Publisher
 	(
 		pID INT UNIQUE NOT NULL,
 		address VARCHAR (25) NOT NULL,
@@ -11,7 +11,7 @@ create table Publisher
 		primary key(pID)
     );
 
-create table Book
+create table IF NOT EXISTS  Book
 	(
 		ISBN VARCHAR(11) UNIQUE NOT NULL,
 		name VARCHAR(15) NOT NULL,
@@ -26,14 +26,14 @@ create table Book
 		foreign key (pID) references Publisher (pID)        
     );
 
-create table Bookstore
+create table IF NOT EXISTS  Bookstore
 	(
 		storeID INT UNIQUE NOT NULL,
 		name VARCHAR (10) NOT NULL,
 		primary key (storeID)
     );
 
-create table Users
+create table IF NOT EXISTS  Users
 	(
 		UID INT UNIQUE NOT NULL,
 		userBilling VARCHAR (25) NOT NULL,
@@ -45,17 +45,17 @@ create table Users
 		foreign key (storeID) references Bookstore (storeID)
     );
 
-create table Cart
+create table IF NOT EXISTS  Cart
 	(
 		UID INT NOT NULL,
 		ISBN VARCHAR(11) NOT NULL,
 		cartQuantity INT NOT NULL,
-		primary key (UID,ISBN), --Might need to rethink primary
+		primary key (UID,ISBN),
 		foreign key (UID) references Users (UID),
 		foreign key (ISBN) references Book (ISBN)
     );
 
-create table Orders
+create table IF NOT EXISTS  Orders
 	(
 		orderID INT UNIQUE NOT NULL,
 		cur_location VARCHAR (25) NOT NULL,
@@ -66,7 +66,7 @@ create table Orders
 		foreign key (UID) references Users (UID)
     );
 
-create table Order_contents
+create table IF NOT EXISTS  Order_contents
 	(
 		orderID INT UNIQUE NOT NULL,
 		ISBN VARCHAR(11) UNIQUE NOT NULL,
@@ -76,7 +76,7 @@ create table Order_contents
 		foreign key (ISBN) references Book (ISBN)
     );
 
-create table Has_numbers
+create table IF NOT EXISTS  Has_numbers
 	(
 		pID INT NOT NULL,
 		phoneNumber VARCHAR(11) UNIQUE NOT NULL,
@@ -84,7 +84,7 @@ create table Has_numbers
 		foreign key (pID) references Publisher (pID)
     );
 
-create table Book_records
+create table IF NOT EXISTS  Book_records
 	(
 		ISBN VARCHAR(11) NOT NULL,
 		orderID INT,
