@@ -6,8 +6,10 @@ html
         
     body
         div
-            h1 Change user
-            div#dropMenu current user:
+            h1 
+            div#dropMenu
+                p currentUser(UID): #{currUID}            
+                p Change user:
                 select(id='userSelect') Test
                     h1 test
                         each user in users
@@ -38,4 +40,5 @@ html
                                 p #{user.cartid}
                             td
                                 p #{user.storeid}
-        script(type="text/javascript" src="./changeUser.js")
+        script(type="text/javascript" src="./Users.js")
+        //- script(type="text/javascript" src="./index.js")
