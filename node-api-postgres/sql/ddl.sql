@@ -59,7 +59,7 @@ create table IF NOT EXISTS Orders
 	(
 		orderID INT UNIQUE NOT NULL,
 		cur_location VARCHAR (25) NOT NULL,
-		UID INT UNIQUE NOT NULL,
+		UID INT NOT NULL,
 		orderBilling VARCHAR (25) NOT NULL,
 		orderShipping VARCHAR (25) NOT NULL,
 		primary key (orderID),

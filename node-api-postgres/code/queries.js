@@ -134,7 +134,6 @@ const getCart = async (request, response) => {
         }
         //console.log(results.rows[0])
         let data = pug.renderFile("cart.pug",{books:res,user:results.rows[0],cartTotal:total.toFixed(2)});
-        console.log(results.rows)
         response.statusCode = 200;
         response.send(data);
         
@@ -143,6 +142,49 @@ const getCart = async (request, response) => {
       // response.statusCode = 200;
       // response.send(data);
 
+  });
+}
+const createOrder = async (request, response) => {
+  let nextOrderID = await pool.query('SELECT COUNT(*) FROM public.orders');
+  let orderBilling = 'warehouse'; //Hardcodes
+  let orderShipping = 'warehouse';//Hardcodes
+  const orderQuery = {
+    text: 'INSERT into public.Orders VALUES ($1,$2,$3,$4,$5)',
+    values: [nextOrderID.rows[0].count /*get from query*/,"Warehouse",request.app.locals.currUID,orderBilling /*get from page*/,orderShipping /*get from page*/],
+  }
+  try{
+    await pool.query(orderQuery);
+  }catch(err){
+    console.log(err.detail);
+  }
+  const bookQuery = {
+    text: 'SELECT * FROM public.cart WHERE uid = $1',
+    values: [request.app.locals.currUID], 
+  }
+  let books = await pool.query(bookQuery);
+  console.log(books.rows)
+  books.rows.forEach (async (element) => {
+    const insertContentsQuery = {
+      text: 'INSERT into public.order_contents VALUES ($1,$2,$3)',
+      values: [nextOrderID.rows[0].count,element.isbn,element.cartquantity]
+    }
+    try{
+      let results = await pool.query(insertContentsQuery);
+      
+    }catch(err){
+      console.log(err);
+    }
+    // const deleteCartQuery = {
+    //   text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
+    //   values: [request.app.locals.currUID,request.params.isbn],
+    // }
+    // try{
+    //   console.log("Delete -> ",deleteCartQuery);
+    //   let results = await pool.query(deleteCartQuery);
+    // }catch(err){
+    //   console.log(err.detail);
+    // }  
+    
   });
 }
 
@@ -171,5 +213,6 @@ module.exports = {
   getBookInfo,
   addCart,
   getCart,
-  removeFromCart
+  removeFromCart,
+  createOrder
 }
