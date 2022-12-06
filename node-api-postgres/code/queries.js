@@ -4,8 +4,8 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'bookstore',
-  //password: 'password',
-  password: 'student',
+  password: 'password',
+  //password: 'student',
   port: 5432,
 })
 
@@ -97,7 +97,7 @@ const getBookInfo = async (request, response) => {
     response.statusCode = 200;
     response.send(data)
     
-  })
+  });
 }
 const getCart = async (request, response) => {
   const query = {
@@ -123,9 +123,26 @@ const getCart = async (request, response) => {
       res.forEach(element => {
         total += (parseFloat(element.price));
       });
-      let data = pug.renderFile("cart.pug",{books:res,currUID:request.app.locals.currUID,cartTotal:total.toFixed(2)});
-      response.statusCode = 200;
-      response.send(data);
+      //QUERY FOR USER SHIPPPING/BILLING
+      const query = {
+        text: 'SELECT uid,userBilling,userShipping FROM public.users WHERE uid = $1',
+        values: [request.app.locals.currUID], 
+      }
+      pool.query(query, (error, results) => {
+        if (error) {
+          throw error
+        }
+        //console.log(results.rows[0])
+        let data = pug.renderFile("cart.pug",{books:res,user:results.rows[0],cartTotal:total.toFixed(2)});
+        console.log(results.rows)
+        response.statusCode = 200;
+        response.send(data);
+        
+      });
+      // let data = pug.renderFile("cart.pug",{books:res,currUID:request.app.locals.currUID,cartTotal:total.toFixed(2)});
+      // response.statusCode = 200;
+      // response.send(data);
+
   });
 }
 

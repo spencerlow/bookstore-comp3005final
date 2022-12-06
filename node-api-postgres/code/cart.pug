@@ -10,8 +10,24 @@ body
     div#main
         br
         br
-        h1 USER: #{currUID}'s Cart
+        h1 USER: #{user.uid}'s Cart
+        p
+        |  Billing: 
+        input(type="text", name="billing", value=user.userbilling)
+        |  Shipping: 
+        input(type="text", name="shipping", value=user.usershipping)
+        
+        br 
+        br
         b Total: $#{cartTotal}
+        br
+        button(type="button" id="checkoutSubmit") Checkout
+
+        br 
+        br
+        br
+        br
+        h2 Contents:
         each book in books
             ul
             <p> ISBN: #{book.isbn} "#{book.name}"| $#{book.price} In Stock: #{book.stockquantity} In Cart:#{book.cartquantity} <a href="/removeFromCart/#{book.isbn}"> Remove </a></p>
