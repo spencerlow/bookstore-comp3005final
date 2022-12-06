@@ -111,7 +111,11 @@ const getCart = async (request, response) => {
     })
     return result
     })).then((res,rej)=>{
-      let data = pug.renderFile("cart.pug",{books:res,currUID:request.app.locals.currUID});
+      let total = 0;
+      res.forEach(element => {
+        total += (parseFloat(element.price));
+      });
+      let data = pug.renderFile("cart.pug",{books:res,currUID:request.app.locals.currUID,cartTotal:total.toFixed(2)});
       response.statusCode = 200;
       response.send(data);
   });

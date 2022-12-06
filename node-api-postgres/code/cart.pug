@@ -10,7 +10,8 @@ body
     div#main
         br
         br
-        h1 USER: #{uid}'s Cart
+        h1 USER: #{currUID}'s Cart
+        b Total: $#{cartTotal}
         each book in books
             ul
             <p> ISBN: #{book.isbn} "#{book.name}"| $#{book.price} In Stock: #{book.stockquantity} In Cart:#{book.cartquantity} <a href="/removeFromCart/#{book.isbn}"> Remove </a></p>
