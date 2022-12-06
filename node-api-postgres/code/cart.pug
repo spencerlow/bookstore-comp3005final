@@ -1,0 +1,16 @@
+doctype html
+html(lang='en')
+
+html
+    head
+        title SP Bookstore - Home
+        
+body
+    div#main
+        br
+        br
+        h1 USER: #{uid}'s Cart
+        each book in books
+            ul
+            <p> ISBN: #{book.isbn} "#{book.name}"| $#{book.price} In Stock: #{book.stockquantity} In Cart:#{book.cartquantity} <a href="/removeCart/#{book.isbn}"> Remove </a></p>
+
