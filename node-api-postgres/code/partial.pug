@@ -1,7 +1,10 @@
 div
-    p currentUser(UID): #{currUID}   
+    | currentUser(UID): #{currUID}
+    |
+    | <a href="/getCart/"> Cart </a>
 div(id="redirect")
-    div(id="index")
-        a(href="/books") Home
-    div(id="users")
-        a(href="/users") Users
+    |
+    a(href="/books") Home 
+    |   
+    a(href="/users") Users
+    |
