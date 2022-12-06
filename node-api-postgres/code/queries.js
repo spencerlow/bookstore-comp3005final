@@ -50,7 +50,7 @@ const getBooks = async (request, response) => {
     })
     return result
     })).then((res,rej)=>{
-      let data = pug.renderFile("index.pug",{books:res});
+      let data = pug.renderFile("index.pug",{books:res,currUID:request.app.locals.currUID});
       response.statusCode = 200;
       response.send(data);
   });
@@ -84,7 +84,8 @@ const getBookInfo = async (request, response) => {
     if (error) {
       throw error
     }
-    let data = pug.renderFile("book.pug",{book:results.rows[0]});
+    //console.log(results.rows[0])
+    let data = pug.renderFile("book.pug",{book:results.rows[0],currUID:request.app.locals.currUID});
     response.statusCode = 200;
     response.send(data)
     
@@ -110,7 +111,7 @@ const getCart = async (request, response) => {
     })
     return result
     })).then((res,rej)=>{
-      let data = pug.renderFile("cart.pug",{books:res,uid:request.app.locals.currUID});
+      let data = pug.renderFile("cart.pug",{books:res,currUID:request.app.locals.currUID});
       response.statusCode = 200;
       response.send(data);
   });

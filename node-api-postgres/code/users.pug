@@ -6,10 +6,11 @@ html
         
     body
         include ./partial.pug
+        
         div
             h1 
             div#dropMenu
-                p currentUser(UID): #{currUID}            
+                //- p currentUser(UID): #{currUID}            
                 p Change user:
                 select(id='userSelect') Test
                     h1 test
@@ -18,28 +19,44 @@ html
                 button(type="button" id="submit") Submit
                 br
                 br
-                table(border='2')
+        
+        div 
+            h3 add new user:
+            |
+            h4 billing:
+            |
+            input(type="text" id="billing")
+            |
+            h4 shipping:
+            |
+            input(type="text" id="shipping")
+            |
+            button(type = "button" id="addUser") Create
+            |
+        
+        div
+            table(border='2')
+                tr
+                    th uid 
+                    th userbilling 
+                    th usershipping
+                    th account_type 
+                    th cartid 
+                    th storeid 
+                
+                each user in users
                     tr
-                        th uid 
-                        th userbilling 
-                        th usershipping
-                        th account_type 
-                        th cartid 
-                        th storeid 
-                    
-                    each user in users
-                        tr
-                            td
-                                p #{user.uid} 
-                            td    
-                                p #{user.userbilling}
-                            td    
-                                p #{user.usershipping}
-                            td 
-                                p #{user.account_type}
-                            td  
-                                p #{user.cartid}
-                            td
-                                p #{user.storeid}
+                        td
+                            p #{user.uid} 
+                        td    
+                            p #{user.userbilling}
+                        td    
+                            p #{user.usershipping}
+                        td 
+                            p #{user.account_type}
+                        td  
+                            p #{user.cartid}
+                        td
+                            p #{user.storeid}
         script(type="text/javascript" src="./users.js")
         //- script(type="text/javascript" src="./index.js")
