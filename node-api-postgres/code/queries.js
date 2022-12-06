@@ -4,8 +4,8 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'bookstore',
-  //password: 'password',
-  password: 'student',
+  password: 'password',
+  //password: 'student',
   port: 5432,
 })
 
@@ -86,7 +86,6 @@ const getBooks = async (request, response) => {
     })
     return result
     })).then((res,rej)=>{
-      console.log(res)
       let data = pug.renderFile("index.pug",{books:res});
       response.statusCode = 200;
       response.send(data);
@@ -96,7 +95,7 @@ const getBooks = async (request, response) => {
 const addCart = async (request, response) => {
   const query = {
     text: 'INSERT into public.cart VALUES ($1,$2,$3)',
-    values: [app.locals.currUID,request.params.isbn,1], //UPDATE WITH SPENCERS GET CURR USER FIX
+    values: [request.app.locals.currUID,request.params.isbn,1], //UPDATE WITH SPENCERS GET CURR USER FIX
   }
   let results = await pool.query(query);
   //console.log(request.params.isbn," Added to cart of User",1)
@@ -122,7 +121,7 @@ const getBookInfo = async (request, response) => {
 const getCart = async (request, response) => {
   const query = {
     text: 'SELECT * FROM public.cart WHERE uid = $1',
-    values: [app.locals.currUID], //UPDATE WITH SPENCERS GET CURR USER FIX
+    values: [request.app.locals.currUID], //UPDATE WITH SPENCERS GET CURR USER FIX
   }
   let books = await pool.query(query);
   (books.rows) = Promise.all(books.rows.map(async book => {
@@ -139,8 +138,7 @@ const getCart = async (request, response) => {
     })
     return result
     })).then((res,rej)=>{
-      console.log(res)
-      let data = pug.renderFile("cart.pug",{books:res});
+      let data = pug.renderFile("cart.pug",{books:res,uid:request.app.locals.currUID});
       response.statusCode = 200;
       response.send(data);
   });
