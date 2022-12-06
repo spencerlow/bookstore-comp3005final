@@ -50,7 +50,7 @@ create table IF NOT EXISTS Cart
 		UID INT NOT NULL,
 		ISBN VARCHAR(11) NOT NULL,
 		cartQuantity INT NOT NULL,
-		primary key (UID,ISBN), --Might need to rethink primary
+		primary key (UID,ISBN),
 		foreign key (UID) references Users (UID),
 		foreign key (ISBN) references Book (ISBN)
     );
