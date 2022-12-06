@@ -12,9 +12,9 @@ const fs = require('fs');
 //let file = fs.readFileSync('./ddl.sql').toString();
 
 //raw buffer is returned
-console.log(fs.readFileSync('./ddl.sql'));
+//console.log(fs.readFileSync('./ddl.sql'));
 //buffer toString
-console.log(fs.readFileSync('./ddl.sql').toString());
+//console.log(fs.readFileSync('./ddl.sql').toString());
 
 //creating tables
 pool.query(fs.readFileSync('./ddl.sql').toString(), (err, result) =>{  
@@ -95,7 +95,7 @@ const getBooks = async (request, response) => {
 const addCart = async (request, response) => {
   const query = {
     text: 'INSERT into public.cart VALUES ($1,$2,$3)',
-    values: [0,request.params.isbn,1],
+    values: [app.locals.currUID,request.params.isbn,1], //UPDATE WITH SPENCERS GET CURR USER FIX
   }
   let results = await pool.query(query);
   //console.log(request.params.isbn," Added to cart of User",1)
@@ -117,6 +117,32 @@ const getBookInfo = async (request, response) => {
     response.send(data)
     
   })
+}
+const getCart = async (request, response) => {
+  const query = {
+    text: 'SELECT * FROM public.cart WHERE uid = $1',
+    values: [app.locals.currUID], //UPDATE WITH SPENCERS GET CURR USER FIX
+  }
+  let books = await pool.query(query);
+  (books.rows) = Promise.all(books.rows.map(async book => {
+    const query = {
+      text: 'SELECT name, stockquantity, price FROM public.book WHERE isbn = $1',
+      values: [book.isbn],
+    }
+    let addOn = await pool.query(query);
+    result = ({
+      ...book,
+      name:addOn.rows.map(element=>element.name),
+      stockquantity:addOn.rows.map(element=>element.stockquantity),
+      price:addOn.rows.map(element=>element.price)
+    })
+    return result
+    })).then((res,rej)=>{
+      console.log(res)
+      let data = pug.renderFile("cart.pug",{books:res});
+      response.statusCode = 200;
+      response.send(data);
+  });
 }
 
 const getUsers = (request, response) => {
@@ -174,5 +200,6 @@ module.exports = {
   getUsers,
   getBooks,
   getBookInfo,
-  addCart
+  addCart,
+  getCart
 }

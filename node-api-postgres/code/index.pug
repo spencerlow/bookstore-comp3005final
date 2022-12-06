@@ -6,16 +6,15 @@ html
         title SP Bookstore - Home
         
 body
-    div#main
-        br
+    div
         br
         h1 SP Bookstore
+        b <a href="/getCart/"> Cart </a>
         div#list
             h2 List of Books:
-            div#info
+            div
                 each book in books
                     ul
                     <p> ISBN: #{book.isbn} "#{book.name}" by #{book.authors} | Genres: #{book.genres} | Pages ##{book.page_num} | $#{book.price} In Stock: #{book.stockquantity} <a href="/addCart/#{book.isbn}"> Add to Cart </a></p>
-                    
                 br
 
