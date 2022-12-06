@@ -4,7 +4,8 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'bookstore',
-  password: 'password',
+  //password: 'password',
+  password: 'student',
   port: 5432,
 })
 
@@ -125,15 +126,17 @@ const getUsers = (request, response) => {
     {
       throw error
     }
-    let data = pug.renderFile("users.pug",{users:results.rows});
+    // console.log(request.app.locals.currUID);
+    // console.log(response.app.locals.currUID);
+    let data = pug.renderFile("users.pug",{users:results.rows,currUID:request.app.locals.currUID});
     response.statusCode = 200;
     response.send(data);
   })
 
-  let results = pool.query(query);
-  console.log(results.rows)
-  response.statusCode = 200;
-  response.send(results.rows)
+  // let results = pool.query(query);
+  // console.log(results.rows)
+  // response.statusCode = 200;
+  // response.send(results.rows)
 }
 
 // const getBookInfo = (request, response) => {
