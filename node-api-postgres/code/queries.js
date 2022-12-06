@@ -27,7 +27,7 @@ const fs = require('fs');
 async function databaseInit(req,res){
   console.log("Initializing Database");
   let ddl_insert = await pool.query(fs.readFileSync('../sql/ddl.sql').toString());
-  let dml_insert = await pool.query(fs.readFileSync('../sql/mock_data.sql').toString());
+  //let dml_insert = await pool.query(fs.readFileSync('../sql/mock_data.sql').toString());
 }
 
 databaseInit();
@@ -63,6 +63,15 @@ const addCart = async (request, response) => {
   }
   let results = await pool.query(query);
   //console.log(request.params.isbn," Added to cart of User",1)
+}
+
+const removeFromCart = async (request, response) => {
+  const query = {
+    text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
+    values: [request.app.locals.currUID,request.params.isbn],
+  }
+  let results = await pool.query(query);
+  response.redirect("/getCart");
 }
 
 
@@ -131,5 +140,6 @@ module.exports = {
   getBooks,
   getBookInfo,
   addCart,
-  getCart
+  getCart,
+  removeFromCart
 }

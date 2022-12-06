@@ -24,6 +24,7 @@ app.locals.currUID = 0;
 app.get('/books', db.getBooks)
 app.get('/book/:isbn', db.getBookInfo)
 app.get('/addCart/:isbn', db.addCart)
+app.get('/removeFromCart/:isbn', db.removeFromCart)
 app.get('/getCart/', db.getCart)
 
 app.get('/users',db.getUsers)
