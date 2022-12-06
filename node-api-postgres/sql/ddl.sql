@@ -11,7 +11,7 @@ create table IF NOT EXISTS Publisher
 		primary key(pID)
     );
 
-create table IF NOT EXISTS  Book
+create table IF NOT EXISTS Book
 	(
 		ISBN VARCHAR(11) UNIQUE NOT NULL,
 		name VARCHAR(15) NOT NULL,
@@ -26,14 +26,14 @@ create table IF NOT EXISTS  Book
 		foreign key (pID) references Publisher (pID)        
     );
 
-create table IF NOT EXISTS  Bookstore
+create table IF NOT EXISTS Bookstore
 	(
 		storeID INT UNIQUE NOT NULL,
 		name VARCHAR (10) NOT NULL,
 		primary key (storeID)
     );
 
-create table IF NOT EXISTS  Users
+create table IF NOT EXISTS Users
 	(
 		UID INT UNIQUE NOT NULL,
 		userBilling VARCHAR (25) NOT NULL,
@@ -44,8 +44,8 @@ create table IF NOT EXISTS  Users
 		primary key (UID),
 		foreign key (storeID) references Bookstore (storeID)
     );
-
-create table IF NOT EXISTS  Cart
+-- updated 22-12-05
+create table IF NOT EXISTS Cart
 	(
 		UID INT NOT NULL,
 		ISBN VARCHAR(11) NOT NULL,
@@ -55,7 +55,7 @@ create table IF NOT EXISTS  Cart
 		foreign key (ISBN) references Book (ISBN)
     );
 
-create table IF NOT EXISTS  Orders
+create table IF NOT EXISTS Orders
 	(
 		orderID INT UNIQUE NOT NULL,
 		cur_location VARCHAR (25) NOT NULL,
@@ -66,7 +66,7 @@ create table IF NOT EXISTS  Orders
 		foreign key (UID) references Users (UID)
     );
 
-create table IF NOT EXISTS  Order_contents
+create table IF NOT EXISTS Order_contents
 	(
 		orderID INT UNIQUE NOT NULL,
 		ISBN VARCHAR(11) UNIQUE NOT NULL,
@@ -76,7 +76,7 @@ create table IF NOT EXISTS  Order_contents
 		foreign key (ISBN) references Book (ISBN)
     );
 
-create table IF NOT EXISTS  Has_numbers
+create table IF NOT EXISTS Has_numbers
 	(
 		pID INT NOT NULL,
 		phoneNumber VARCHAR(11) UNIQUE NOT NULL,
@@ -84,7 +84,7 @@ create table IF NOT EXISTS  Has_numbers
 		foreign key (pID) references Publisher (pID)
     );
 
-create table IF NOT EXISTS  Book_records
+create table IF NOT EXISTS Book_records
 	(
 		ISBN VARCHAR(11) NOT NULL,
 		orderID INT,

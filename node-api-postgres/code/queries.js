@@ -26,14 +26,8 @@ pool.query(fs.readFileSync('../sql/ddl.sql').toString(), (err, result) =>{
 });
 
 //mock data
-/*
-pool.query(fs.readFileSync('./mock_data.sql').toString(), (err, result) =>{  
-  if (err){
-    throw err
-  }
-  console.log("success")
-});
-*/
+//await pool.query(fs.readFileSync('../sql/mock_data.sql').toString());
+
 
 // const getBooks = async (request, response) => {
 //   let results = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC')
