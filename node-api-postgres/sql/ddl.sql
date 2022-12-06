@@ -44,7 +44,7 @@ create table IF NOT EXISTS Users
 		primary key (UID),
 		foreign key (storeID) references Bookstore (storeID)
     );
-
+-- updated 22-12-05
 create table IF NOT EXISTS Cart
 	(
 		UID INT NOT NULL,
