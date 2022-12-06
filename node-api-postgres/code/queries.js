@@ -4,8 +4,8 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'bookstore',
-  password: 'password',
-  //password: 'student',
+  //password: 'password',
+  password: 'student',
   port: 5432,
 })
 
@@ -61,7 +61,11 @@ const addCart = async (request, response) => {
     text: 'INSERT into public.cart VALUES ($1,$2,$3)',
     values: [request.app.locals.currUID,request.params.isbn,1],
   }
-  let results = await pool.query(query);
+  try{
+    let results = await pool.query(query);
+  }catch(err){
+    console.log(err.detail);
+  }
   //console.log(request.params.isbn," Added to cart of User",1)
 }
 
@@ -70,7 +74,11 @@ const removeFromCart = async (request, response) => {
     text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
     values: [request.app.locals.currUID,request.params.isbn],
   }
-  let results = await pool.query(query);
+  try{
+    let results = await pool.query(query);
+  }catch(err){
+    console.log(err.detail);
+  }  
   response.redirect("/getCart");
 }
 
