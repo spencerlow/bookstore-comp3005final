@@ -65,6 +65,15 @@ const addCart = async (request, response) => {
   //console.log(request.params.isbn," Added to cart of User",1)
 }
 
+const removeFromCart = async (request, response) => {
+  const query = {
+    text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
+    values: [request.app.locals.currUID,request.params.isbn],
+  }
+  let results = await pool.query(query);
+  response.redirect("/getCart");
+}
+
 
 const getBookInfo = async (request, response) => {
   const query = {
@@ -132,5 +141,6 @@ module.exports = {
   getBooks,
   getBookInfo,
   addCart,
-  getCart
+  getCart,
+  removeFromCart
 }

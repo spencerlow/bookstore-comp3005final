@@ -13,5 +13,5 @@ body
         h1 USER: #{uid}'s Cart
         each book in books
             ul
-            <p> ISBN: #{book.isbn} "#{book.name}"| $#{book.price} In Stock: #{book.stockquantity} In Cart:#{book.cartquantity} <a href="/removeCart/#{book.isbn}"> Remove </a></p>
+            <p> ISBN: #{book.isbn} "#{book.name}"| $#{book.price} In Stock: #{book.stockquantity} In Cart:#{book.cartquantity} <a href="/removeFromCart/#{book.isbn}"> Remove </a></p>
 
