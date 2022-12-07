@@ -19,7 +19,7 @@ body
         
         br 
         br
-        b Total: $#{cartTotal}
+        b#total Total: $#{cartTotal}
         br
         button(type="button" id="checkoutSubmit") Checkout
 
@@ -27,8 +27,9 @@ body
         br
         br
         br
-        h2 Contents:
-        each book in books
-            ul
-            <p> ISBN: #{book.isbn} "#{book.name}"| $#{book.price} In Stock: #{book.stockquantity} In Cart:#{book.cartquantity} <a href="/removeFromCart/#{book.isbn}"> Remove </a></p>
+        div#contents
+            h2 Contents:
+            each book in books
+                ul
+                <p> ISBN: #{book.isbn} "#{book.name}"| $#{book.price} In Stock: #{book.stockquantity} In Cart:#{book.cartquantity} <a href="/removeFromCart/#{book.isbn}"> Remove </a></p>
 
