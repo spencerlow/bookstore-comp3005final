@@ -20,6 +20,8 @@ app.get('/', async(request, response) => {
 
 // local variable for current user's UID
 app.locals.currUID = 0;
+// local variable for the next UID if a new user is made?:
+//local variable for current URL
 
 app.get('/books', db.getBooks)
 app.get('/book/:isbn', db.getBookInfo)
@@ -29,6 +31,9 @@ app.get('/getCart/', db.getCart)
 app.get('/createOrder/', db.createOrder)
 app.get('/users',db.getUsers)
 app.get('/users/changeUser=:n', changeUser)
+
+app.get('/users/addUser',db.addUser)
+//app.get('/users/addUser?shipping=:uShipping&billing=:uBilling',db.addUser)
 
 app.listen(port, () => {
 console.log(`App running on port localhost:${port}.`)

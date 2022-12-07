@@ -207,6 +207,58 @@ const getUsers = (request, response) => {
   // response.send(results.rows)
 }
 
+const addUser = async (request, response) => {
+
+  let nextUID = 0;
+
+//find nextUID
+  const query = {
+    text: 'SELECT * FROM public.users ORDER BY uid ASC',
+  }
+  try{
+    let results = await pool.query(query);
+    nextUID = results.rows.length
+  }catch(err){
+    console.log(err.detail);
+    return;
+  }
+
+  console.log("in here");
+  console.log("nextuid:" + nextUID);
+
+  console.log(request.url);
+  let shipping = request.url.split("?")[1].split("&")[0].split("=")[1];
+  let billing = request.url.split("?")[1].split("&")[1].split("=")[1];
+  console.log("shipping | " + shipping);
+  console.log("billing | " + billing);
+  shipping = shipping.replaceAll("_"," ");
+  billing = billing.replaceAll("_"," ");
+
+//create new user
+  const query2 = {
+    // uid,userbilling,usershipping,account_type,cardid,storeid
+    text: 'INSERT into public.users VALUES ($1,$2,$3,$4,$5,$6)',
+    values: [nextUID,shipping,billing,"customer",nextUID,1],
+  }
+  try{
+    let results = await pool.query(query2);
+  }catch(err){
+    console.log(err.detail);
+    return;
+  }
+
+  //let data = pug.renderFile("users.pug",{currUID:request.app.locals.currUID});
+  //response.statusCode = 200;
+  //response.send(data);    
+  //response.send('/users');
+  // 
+  response.status(200).redirect("http://localhost:3000/users");
+  //request.url = request.url.split("/addUser")[0]   
+  
+
+  //console.log(request.params.isbn," Added to cart of User",1)
+}
+
 module.exports = {
   getUsers,
   getBooks,
@@ -214,5 +266,6 @@ module.exports = {
   addCart,
   getCart,
   removeFromCart,
-  createOrder
+  createOrder,
+  addUser
 }
