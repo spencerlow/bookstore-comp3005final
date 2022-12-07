@@ -185,11 +185,39 @@ const createOrder = async (request, response) => {
     }
     let results1 = await pool.query(updateStockQuery);
 
+    const checkStockQuery = {
+      text: 'SELECT stockquantity,isbn,pid,lastmonthsales FROM public.book WHERE isbn=$1',
+      values: [element.isbn],
+    }
+    let results2 = await pool.query(checkStockQuery);
+    if(results2.rows[0].stockquantity < 10){
+      const publisherInfoQuery = {
+        text: 'SELECT * FROM public.publisher WHERE pid=$1',
+        values: [results2.rows[0].pid],
+      }
+      let results = await pool.query(publisherInfoQuery);
+      //console.log(results);
+      console.log("");
+      console.log("DETECTED LOW BOOK STOCK (MIN 10)");
+      console.log("======= SYSTEM E-MAIL =======");
+      console.log("To: Publisher",results.rows[0].pid);
+      console.log("Email: ",results.rows[0].email);
+      console.log("Address: ",results.rows[0].address);
+      console.log("Banking Route: #",results.rows[0].banking);
+
+      console.log("ORDER");
+      console.log("Book ISBN: ",results2.rows[0].isbn);
+      console.log("Quantity (Based on last month sales): ",results2.rows[0].lastmonthsales);
+      console.log("======= END =======");
+      console.log("")
+    }
+    
     const deleteCartQuery = {
       text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
       values: [request.app.locals.currUID,element.isbn],
     }
-    let results2 = await pool.query(deleteCartQuery);
+    let results3 = await pool.query(deleteCartQuery);
+    //console.log(results2)
   });
   //let data = pug.renderFile("cart.pug",{books:[],user:request.app.locals.currUID,cartTotal:0});
   response.statusCode = 200;
