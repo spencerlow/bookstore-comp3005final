@@ -146,8 +146,10 @@ const getCart = async (request, response) => {
 }
 const createOrder = async (request, response) => {
   let nextOrderID = await pool.query('SELECT COUNT(*) FROM public.orders');
-  let orderBilling = 'warehouse'; //Hardcodes
-  let orderShipping = 'warehouse';//Hardcodes
+  let orderBilling = document.getElementById("billing").value; 
+  let orderShipping = document.getElementById("shipping").value;
+  console.log("billing",orderBilling);
+  console.log("Shipping",orderShipping);
   const orderQuery = {
     text: 'INSERT into public.Orders VALUES ($1,$2,$3,$4,$5)',
     values: [nextOrderID.rows[0].count /*get from query*/,"Warehouse",request.app.locals.currUID,orderBilling /*get from page*/,orderShipping /*get from page*/],
@@ -166,7 +168,7 @@ const createOrder = async (request, response) => {
   books.rows.forEach (async (element) => {
     const insertContentsQuery = {
       text: 'INSERT into public.order_contents VALUES ($1,$2,$3)',
-      values: [nextOrderID.rows[0].count,element.isbn,element.cartquantity]
+      values: [nextOrderID.rows[0].count,element.isbn,element.cartquantity],
     }
     try{
       let results = await pool.query(insertContentsQuery);
@@ -174,18 +176,27 @@ const createOrder = async (request, response) => {
     }catch(err){
       console.log(err);
     }
-    // const deleteCartQuery = {
-    //   text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
-    //   values: [request.app.locals.currUID,request.params.isbn],
-    // }
-    // try{
-    //   console.log("Delete -> ",deleteCartQuery);
-    //   let results = await pool.query(deleteCartQuery);
-    // }catch(err){
-    //   console.log(err.detail);
-    // }  
-    
+    const deleteCartQuery = {
+      text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
+      values: [request.app.locals.currUID,element.isbn],
+    }
+    let results = await pool.query(deleteCartQuery);
   });
+  //let data = pug.renderFile("cart.pug",{books:[],user:request.app.locals.currUID,cartTotal:0});
+  response.statusCode = 200;
+  response.redirect("/getCart");
+  // books.rows.forEach (async (element) => {
+  //   const deleteCartQuery = {
+  //     text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
+  //     values: [request.app.locals.currUID,elements.isbn],
+  //   }
+  //   console.log("Delete -> ",deleteCartQuery);
+  //   try{
+  //     let results = await pool.query(deleteCartQuery);
+  //   }catch(err){
+  //     console.log(err);
+  //   }
+  // });
 }
 
 const getUsers = (request, response) => {
@@ -205,6 +216,11 @@ const getUsers = (request, response) => {
   // console.log(results.rows)
   // response.statusCode = 200;
   // response.send(results.rows)
+}
+function updatePage() {
+  const total = document.getElementById('total')
+  const contents = document.getElementById('contents');
+  
 }
 
 module.exports = {
