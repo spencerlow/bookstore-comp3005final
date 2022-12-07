@@ -284,6 +284,39 @@ const addUser = async (request, response) => {
   //console.log(request.params.isbn," Added to cart of User",1)
 }
 
+
+const searchQuery = async (request, response) => {
+
+  //get user table
+  const query = {
+    text: 'SELECT * FROM public.users ORDER BY uid ASC',
+  }
+  try{
+    let results = await pool.query(query);
+  }catch(err){
+    console.log(err.detail);
+    return;
+  }
+
+  //get book table
+
+  //get order table
+
+  //get publisher table
+
+  //get phonenumber table
+
+  //get order contents table
+
+  //get bookstore?
+  //get book_records
+
+
+  let data = pug.renderFile("search.pug",{});
+  response.statusCode = 200;
+  response.send(data);
+}
+
 module.exports = {
   getUsers,
   getBooks,
@@ -292,5 +325,6 @@ module.exports = {
   getCart,
   removeFromCart,
   createOrder,
-  addUser
+  addUser,
+  searchQuery
 }

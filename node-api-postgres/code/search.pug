@@ -6,17 +6,29 @@ html
         title SEARCH
         //- ?isbn=...&price=...
 body
+    include ./partial.pug
     div#main
-        input(type="text" id="isbn") isbn
-        input(type="text" id="price") price
-        input(type="text" id="author") author
-        input(type="text" id="genre") genre
-        input(type="text" id="publiserEmail") publisher email
-        input(type="text" id="publisherPhone") phone number
-        input(type="text" id="") ..
-        input(type="text" id="") ...
-        input(type="text" id="") ... 
-        input(type="text" id="") ...
+        label(for="isbn") isbn:
+        input(type="text" id="isbn")
+
+        label(for="price") price:
+        input(type="text" id="price")
+
+        label(for="author") author:
+        input(type="text" id="author")
+
+        label(for="genre") genre:
+        input(type="text" id="genre")
+
+        label(for="publiserEmail") publiserEmail:
+        input(type="text" id="publiserEmail")
+
+        label(for="publisherPhone") publisherPhone:
+        input(type="text" id="publisherPhone")
+        //- input(type="text" id="") ..
+        //- input(type="text" id="") ...
+        //- input(type="text" id="") ... 
+        //- input(type="text" id="") ...
         button(type ="button" id="submit") Search
 
 script(type="text/javascript" src="./search.js")
