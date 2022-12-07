@@ -146,13 +146,15 @@ const getCart = async (request, response) => {
 }
 const createOrder = async (request, response) => {
   let nextOrderID = await pool.query('SELECT COUNT(*) FROM public.orders');
-  let orderBilling = document.getElementById("billing").value; 
-  let orderShipping = document.getElementById("shipping").value;
-  console.log("billing",orderBilling);
-  console.log("Shipping",orderShipping);
+  let shipping = request.url.split("?")[1].split("&")[0].split("=")[1];
+  let billing = request.url.split("?")[1].split("&")[1].split("=")[1];
+  console.log("CreateOrder Shipping: | " + shipping);
+  console.log("CreateOrder Billing | " + billing);
+  shipping = shipping.replaceAll("_"," ");
+  billing = billing.replaceAll("_"," ");
   const orderQuery = {
     text: 'INSERT into public.Orders VALUES ($1,$2,$3,$4,$5)',
-    values: [nextOrderID.rows[0].count /*get from query*/,"Warehouse",request.app.locals.currUID,orderBilling /*get from page*/,orderShipping /*get from page*/],
+    values: [nextOrderID.rows[0].count,billing,request.app.locals.currUID,billing,shipping],
   }
   try{
     await pool.query(orderQuery);
@@ -176,11 +178,18 @@ const createOrder = async (request, response) => {
     }catch(err){
       console.log(err);
     }
+    console.log(element,element.isbn)
+    const updateStockQuery = {
+      text: 'UPDATE public.book SET stockquantity= stockquantity - 1 WHERE isbn=$1',
+      values: [element.isbn],
+    }
+    let results1 = await pool.query(updateStockQuery);
+
     const deleteCartQuery = {
       text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
       values: [request.app.locals.currUID,element.isbn],
     }
-    let results = await pool.query(deleteCartQuery);
+    let results2 = await pool.query(deleteCartQuery);
   });
   //let data = pug.renderFile("cart.pug",{books:[],user:request.app.locals.currUID,cartTotal:0});
   response.statusCode = 200;

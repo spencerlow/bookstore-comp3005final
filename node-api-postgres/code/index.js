@@ -28,8 +28,7 @@ app.get('/book/:isbn', db.getBookInfo)
 app.get('/addCart/:isbn', db.addCart)
 app.get('/removeFromCart/:isbn', db.removeFromCart)
 app.get('/getCart/', db.getCart)
-document.getElementById("checkoutSubmit").onclick = db.createOrder;
-//app.get('/createOrder/', db.createOrder)
+app.get('/createOrder/', db.createOrder)
 app.get('/users',db.getUsers)
 app.get('/users/changeUser=:n', changeUser)
 
@@ -42,6 +41,7 @@ console.log(`App running on port localhost:${port}.`)
 
 
 // change currUID based on url
+
 function changeUser(req, res)
 {
   console.log('test');

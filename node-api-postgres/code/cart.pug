@@ -3,19 +3,20 @@ html(lang='en')
 
 html
     head
-        title SP Bookstore - Home
+        title Look Inna Book - Home
         
 body
     include ./partial.pug
+    
     div#main
         br
         br
         h1 USER: #{user.uid}'s Cart
         p
         |  Billing: 
-        input(type="text", name="billing", value=user.userbilling)
+        input(type="text", name= "billing",id="billing", value=user.userbilling)
         |  Shipping: 
-        input(type="text", name="shipping", value=user.usershipping)
+        input(type="text", name= "shipping",id="shipping", value=user.usershipping)
         
         br 
         br
@@ -33,3 +34,4 @@ body
                 ul
                 <p> ISBN: #{book.isbn} "#{book.name}"| $#{book.price} In Stock: #{book.stockquantity} In Cart:#{book.cartquantity} <a href="/removeFromCart/#{book.isbn}"> Remove </a></p>
 
+    script(type="text/javascript" src="/eventHandle.js")
