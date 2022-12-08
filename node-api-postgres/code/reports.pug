@@ -1,0 +1,21 @@
+doctype html
+html(lang='en')
+
+html
+    head
+        title Look Inna Book - Reports
+        
+body
+    include ./partial.pug
+    div
+        br
+        h1 Reports
+        div#list
+            h2 List of Reports:
+            div
+                ul
+                <p>#{report1.rid}.<a href="/report/#{report1.rid}">#{report1.name} </a></p>
+                <p>#{report2.rid}.<a href="/report/#{report2.rid}">#{report2.name} </a></p>
+                <p>#{report3.rid}.<a href="/report/#{report3.rid}">#{report3.name} </a></p>
+            br
+

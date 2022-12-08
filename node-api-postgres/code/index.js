@@ -39,6 +39,11 @@ app.get('/search',search)
 
 app.get('/search?',db.searchQuery)
 
+app.get('/reports',db.reports)
+app.get('/report/1',db.report1)
+app.get('/report/2',db.report2)
+app.get('/report/3',db.report3)
+
 app.listen(port, () => {
 console.log(`App running on port localhost:${port}.`)
 })

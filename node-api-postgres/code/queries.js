@@ -254,11 +254,6 @@ const getUsers = (request, response) => {
   // response.statusCode = 200;
   // response.send(results.rows)
 }
-function updatePage() {
-  const total = document.getElementById('total')
-  const contents = document.getElementById('contents');
-  
-}
 
 const addUser = async (request, response) => {
 
@@ -345,6 +340,92 @@ const searchQuery = async (request, response) => {
   response.send(data);
 }
 
+const reports = async (request, response) => {
+  let report1 ={name:"Sales vs Expenses",rid:"1"};
+  let report2 ={name:"Sales by Author", rid:"2"};
+  let report3 ={name:"Sales by Genre",rid:"3"};
+
+  let list = [report1,report2,report3];
+
+  let data = pug.renderFile("reports.pug",{report1,report2,report3});
+  response.statusCode = 200;
+  response.send(data);
+}
+
+const report1 = async (request, response) => {
+  //REPORT 1 -> SALES VS EXPENDITURES (ASSUMING EXPENSES = ROYALTIES PAID)
+  //TABLE ISBN NAME QUANTITY_SOLD RAW_PRICE(PRICE*QUANTITY_SOLD) ROYALTY_CALC(ROYALTY*QUANTITY_SOLD) PROFIT
+  const query = {
+    text: 'SELECT isbn, count(*) FROM public.order_contents WHERE isbn IS NOT NULL GROUP BY isbn',
+  }
+  try{
+    let books_ordered = await pool.query(query);
+    (books_ordered.rows) = Promise.all(books_ordered.rows.map(async book => {
+      const bookInfoQuery = {
+        text: 'SELECT * FROM public.book where isbn=$1',
+        values:[book.isbn],
+      }
+      let bookInfo = await pool.query(bookInfoQuery);
+      let net_in_calc = (parseInt(book.count) *parseFloat(bookInfo.rows[0].price)).toFixed(2);
+      let expense_calc = (net_in_calc * parseFloat((bookInfo.rows[0].royalty)/100)).toFixed(2);
+      result = ({
+        ...book,
+        name:bookInfo.rows.map(element=>element.name),
+        price:bookInfo.rows.map(element=>element.price),
+        net_in:net_in_calc,
+        expense:expense_calc,
+        net_prof:(net_in_calc - expense_calc).toFixed(2)
+      })
+      return result
+      })).then((res,rej)=>{
+        let total = 0;
+        res.forEach(element => {
+          total += (parseFloat(element.net_prof));
+        });
+        total = total.toFixed(2)
+        let data = pug.renderFile("./reports/report1.pug",{sales:res,total});
+        response.statusCode = 200;
+        response.send(data);
+      });
+  }
+  catch(err){
+    return;
+  }
+}
+const report2 = async (request, response) => {
+  //REPORT 2 -> SALES PER AUTHOR
+  //TABLE ISBN NAME QUANTITY_SOLD RAW_PRICE(PRICE*QUANTITY_SOLD) ROYALTY_CALC(ROYALTY*QUANTITY_SOLD) PROFIT
+  const query = {
+    text: 'SELECT book_records.author,  COUNT(book_records.isbn) FROM book_records LEFT JOIN order_contents ON book_records.isbn = order_contents.isbn GROUP BY book_records.author',
+  }
+  try{
+    let auth_count = await pool.query(query);
+    let data = pug.renderFile("./reports/report2.pug",{sales:auth_count.rows});
+    response.statusCode = 200;
+    response.send(data);
+  }
+  catch(err){
+    return;
+  }
+}
+const report3 = async (request, response) => {
+  //REPORT 2 -> SALES PER AUTHOR
+  //TABLE ISBN NAME QUANTITY_SOLD RAW_PRICE(PRICE*QUANTITY_SOLD) ROYALTY_CALC(ROYALTY*QUANTITY_SOLD) PROFIT
+  const query = {
+    text: 'SELECT book_records.genre,  COUNT(book_records.isbn) FROM book_records LEFT JOIN order_contents ON book_records.isbn = order_contents.isbn GROUP BY book_records.genre',
+  }
+  try{
+    let gen_count = await pool.query(query);
+    let data = pug.renderFile("./reports/report3.pug",{sales:gen_count.rows});
+    response.statusCode = 200;
+    response.send(data);
+  }
+  catch(err){
+    return;
+  }
+}
+
+
 module.exports = {
   getUsers,
   getBooks,
@@ -354,5 +435,9 @@ module.exports = {
   removeFromCart,
   createOrder,
   addUser,
-  searchQuery
+  searchQuery,
+  reports,
+  report1,
+  report2,
+  report3
 }

@@ -1,0 +1,30 @@
+doctype html
+html(lang='en')
+
+html
+    head
+        title Look Inna Book - Sales per Author
+        
+body
+    include ../partial.pug
+    div
+        br
+        h1 Sales per Author
+        div#list
+            h2 List of Sales:
+            b Total Profit: #{total}
+            div
+                table(border='2')
+                    tr
+                        th Author 
+                        th Books Sold 
+                    
+                    each sale in sales
+                        tr
+                            td
+                                p #{sale.author} 
+                            td    
+                                p #{sale.count}
+    
+            
+

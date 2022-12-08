@@ -1,0 +1,29 @@
+doctype html
+html(lang='en')
+
+html
+    head
+        title Look Inna Book - Sales per Genre
+        
+body
+    include ../partial.pug
+    div
+        br
+        h1 Sales per Genre
+        div#list
+            h2 List of Sales:
+            div
+                table(border='2')
+                    tr
+                        th Genre 
+                        th Books Sold 
+                    
+                    each sale in sales
+                        tr
+                            td
+                                p #{sale.genre} 
+                            td    
+                                p #{sale.count}
+    
+            
+

@@ -1,0 +1,44 @@
+doctype html
+html(lang='en')
+
+html
+    head
+        title Look Inna Book - Sales vs Expenses
+        
+body
+    include ../partial.pug
+    div
+        br
+        h1 Sales vs Expenses
+        div#list
+            h2 List of Sales:
+            b Total Profit: #{total}
+            div
+                table(border='2')
+                    tr
+                        th ISBN 
+                        th NAME 
+                        th Copies Sold
+                        th Price Per 
+                        th Net Income 
+                        th Expenses 
+                        th Net Profit 
+                    
+                    each sale in sales
+                        tr
+                            td
+                                p #{sale.isbn} 
+                            td    
+                                p #{sale.name}
+                            td    
+                                p #{sale.count}
+                            td 
+                                p #{sale.price}
+                            td  
+                                p #{sale.net_in}
+                            td
+                                p #{sale.expense}      
+                            td
+                                p #{sale.net_prof}       
+            
+
