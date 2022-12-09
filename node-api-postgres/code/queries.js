@@ -14,7 +14,12 @@ const fs = require('fs');
 async function databaseInit(req,res){
   console.log("Initializing Database");
   let ddl_insert = await pool.query(fs.readFileSync('../sql/ddl.sql').toString());
-  let dml_insert = await pool.query(fs.readFileSync('../sql/mock_data.sql').toString());
+  try{
+    let dml_insert = await pool.query(fs.readFileSync('../sql/mock_data.sql').toString());
+  }catch(err)
+  {
+    console.log("dml.sql -> " + err.detail);
+  }
 }
 
 databaseInit();

@@ -65,6 +65,6 @@ function changeUser(req, res)
 
 function search(req,res)
 {
-  res.status(200).send(pug.renderFile("search.pug",{currUID:app.locals.currUID}));
+  res.status(200).send(pug.renderFile("search.pug",{currUID:app.locals.currUID,table:{}}));
   return;
 }

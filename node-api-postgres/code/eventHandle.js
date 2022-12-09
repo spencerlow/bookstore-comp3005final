@@ -59,9 +59,26 @@ console.log("test");
 if(document.getElementById("submit")){
   document.getElementById("submit").onclick = changeUser;
   document.getElementById("addUser").onclick = addUser;
-
-
+  document.getElementById("filter").onclick = search;
 }
 else if(document.getElementById("checkoutSubmit")){
   document.getElementById("checkoutSubmit").onclick = createOrder;
 }
+
+
+
+function search(){
+    console.log("clicked to filter");
+
+    //let newurl = "/seach?"    
+    //console.log(document.getElementById("userSelect").value)
+    //window.location.href = window.location.href;
+    //+ "=" + document.getElementById("userSelect").value;
+  }
+
+
+
+
+
+
+
