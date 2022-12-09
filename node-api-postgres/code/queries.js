@@ -10,29 +10,14 @@ const pool = new Pool({
 })
 
 const fs = require('fs');
-//let file = fs.readFileSync('./ddl.sql').toString();
 
-//raw buffer is returned
-//console.log(fs.readFileSync('./ddl.sql'));
-//buffer toString
-//console.log(fs.readFileSync('./ddl.sql').toString());
-
-//creating tables
-// pool.query(fs.readFileSync('../sql/ddl.sql').toString(), (err, result) =>{  
-//   if (err){
-//     throw err
-//   }
-//   console.log("success")
-// });
 async function databaseInit(req,res){
   console.log("Initializing Database");
   let ddl_insert = await pool.query(fs.readFileSync('../sql/ddl.sql').toString());
-  //let dml_insert = await pool.query(fs.readFileSync('../sql/mock_data.sql').toString());
+  let dml_insert = await pool.query(fs.readFileSync('../sql/mock_data.sql').toString());
 }
 
 databaseInit();
-//mock data
-//await pool.query(fs.readFileSync('../sql/mock_data.sql').toString());
 
 const getBooks = async (request, response) => {
   let books = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC');
@@ -66,7 +51,6 @@ const addCart = async (request, response) => {
   }catch(err){
     console.log(err.detail);
   }
-  //console.log(request.params.isbn," Added to cart of User",1)
 }
 
 const removeFromCart = async (request, response) => {
@@ -132,15 +116,11 @@ const getCart = async (request, response) => {
         if (error) {
           throw error
         }
-        //console.log(results.rows[0])
         let data = pug.renderFile("cart.pug",{books:res,user:results.rows[0],cartTotal:total.toFixed(2)});
         response.statusCode = 200;
         response.send(data);
         
       });
-      // let data = pug.renderFile("cart.pug",{books:res,currUID:request.app.locals.currUID,cartTotal:total.toFixed(2)});
-      // response.statusCode = 200;
-      // response.send(data);
 
   });
 }
@@ -196,7 +176,6 @@ const createOrder = async (request, response) => {
         values: [results2.rows[0].pid],
       }
       let results = await pool.query(publisherInfoQuery);
-      //console.log(results);
       console.log("");
       console.log("DETECTED LOW BOOK STOCK (MIN 10)");
       console.log("======= SYSTEM E-MAIL =======");
@@ -217,23 +196,9 @@ const createOrder = async (request, response) => {
       values: [request.app.locals.currUID,element.isbn],
     }
     let results3 = await pool.query(deleteCartQuery);
-    //console.log(results2)
   });
-  //let data = pug.renderFile("cart.pug",{books:[],user:request.app.locals.currUID,cartTotal:0});
   response.statusCode = 200;
   response.redirect("/getCart");
-  // books.rows.forEach (async (element) => {
-  //   const deleteCartQuery = {
-  //     text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
-  //     values: [request.app.locals.currUID,elements.isbn],
-  //   }
-  //   console.log("Delete -> ",deleteCartQuery);
-  //   try{
-  //     let results = await pool.query(deleteCartQuery);
-  //   }catch(err){
-  //     console.log(err);
-  //   }
-  // });
 }
 
 const getUsers = (request, response) => {
@@ -242,17 +207,11 @@ const getUsers = (request, response) => {
     {
       throw error
     }
-    // console.log(request.app.locals.currUID);
-    // console.log(response.app.locals.currUID);
+
     let data = pug.renderFile("users.pug",{users:results.rows,currUID:request.app.locals.currUID});
     response.statusCode = 200;
     response.send(data);
   })
-
-  // let results = pool.query(query);
-  // console.log(results.rows)
-  // response.statusCode = 200;
-  // response.send(results.rows)
 }
 
 const addUser = async (request, response) => {
@@ -294,17 +253,7 @@ const addUser = async (request, response) => {
     console.log(err.detail);
     return;
   }
-
-  //let data = pug.renderFile("users.pug",{currUID:request.app.locals.currUID});
-  //response.statusCode = 200;
-  //response.send(data);    
-  //response.send('/users');
-  // 
   response.status(200).redirect("http://localhost:3000/users");
-  //request.url = request.url.split("/addUser")[0]   
-  
-
-  //console.log(request.params.isbn," Added to cart of User",1)
 }
 
 
@@ -394,7 +343,6 @@ const report1 = async (request, response) => {
 }
 const report2 = async (request, response) => {
   //REPORT 2 -> SALES PER AUTHOR
-  //TABLE ISBN NAME QUANTITY_SOLD RAW_PRICE(PRICE*QUANTITY_SOLD) ROYALTY_CALC(ROYALTY*QUANTITY_SOLD) PROFIT
   const query = {
     text: 'SELECT book_records.author,  COUNT(book_records.isbn) FROM book_records LEFT JOIN order_contents ON book_records.isbn = order_contents.isbn GROUP BY book_records.author',
   }
@@ -409,8 +357,7 @@ const report2 = async (request, response) => {
   }
 }
 const report3 = async (request, response) => {
-  //REPORT 2 -> SALES PER AUTHOR
-  //TABLE ISBN NAME QUANTITY_SOLD RAW_PRICE(PRICE*QUANTITY_SOLD) ROYALTY_CALC(ROYALTY*QUANTITY_SOLD) PROFIT
+  //REPORT 3 -> SALES PER GENRE
   const query = {
     text: 'SELECT book_records.genre,  COUNT(book_records.isbn) FROM book_records LEFT JOIN order_contents ON book_records.isbn = order_contents.isbn GROUP BY book_records.genre',
   }
@@ -423,6 +370,24 @@ const report3 = async (request, response) => {
   catch(err){
     return;
   }
+}
+
+const controlPanel = async (request, response) => {
+  let books = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC');
+  //console.log("BOOKS",books.rows);
+  let data = pug.renderFile("controlPanel.pug",{books:books.rows,currUID:request.app.locals.currUID});
+  response.statusCode = 200;
+  response.send(data);
+}
+
+const removeBook = async (request, response) => {
+  const removeBookQuery = {
+    text: 'DELETE FROM book WHERE isbn =$1',
+    values:[request.params.isbn],
+  }
+  let result = await pool.query(removeBookQuery);
+  response.statusCode = 200;
+  response.redirect("/controlPanel");
 }
 
 
@@ -439,5 +404,7 @@ module.exports = {
   reports,
   report1,
   report2,
-  report3
+  report3,
+  controlPanel,
+  removeBook
 }

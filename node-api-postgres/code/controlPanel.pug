@@ -1,0 +1,20 @@
+doctype html
+html(lang='en')
+
+html
+    head
+        title Look Inna Book - Control Panel
+        
+body
+    include ./partial.pug
+    div
+        br
+        h1 Control Panel
+        div#list
+            h2 List of Books:
+            div
+                each book in books
+                    ul
+                    <p><a href="/removeBook/#{book.isbn}"> Remove </a>      ISBN: #{book.isbn} #{book.name}</p>
+                br
+

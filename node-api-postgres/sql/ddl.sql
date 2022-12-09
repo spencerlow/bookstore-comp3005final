@@ -29,7 +29,7 @@ create table IF NOT EXISTS Book
 create table IF NOT EXISTS Bookstore
 	(
 		storeID INT UNIQUE NOT NULL,
-		name VARCHAR (10) NOT NULL,
+		name VARCHAR (20) NOT NULL,
 		primary key (storeID)
     );
 
@@ -73,7 +73,7 @@ create table IF NOT EXISTS Order_contents
 		orderQuantity INT NOT NULL,
 		primary key (orderID,ISBN),
 		foreign key (orderID) references Orders (orderID),
-		foreign key (ISBN) references Book (ISBN)
+		foreign key (ISBN) references Book (ISBN) ON DELETE CASCADE  --DELETE WITH CASCADE
     );
 
 create table IF NOT EXISTS Has_numbers
@@ -92,7 +92,7 @@ create table IF NOT EXISTS Book_records
 		author VARCHAR(11) NOT NULL,
 		genre VARCHAR(11) NOT NULL,
 		primary key (ISBN, orderID, phone_numbers, author, genre),
-		foreign key (ISBN) references Book (ISBN),
+		foreign key (ISBN) references Book (ISBN) ON DELETE CASCADE, --DELETE WITH CASCADE
 		foreign key (orderID) references Orders (orderID),
 		foreign key (phone_numbers) references Has_numbers (phoneNumber)
     );
