@@ -7,6 +7,58 @@ html
         
 body
     include ./partial.pug
+    div 
+        h3 add new book:
+        h3 if ISBN exists?
+        |
+        | ISBN:
+        |
+        input(type="text" id="isbn")
+        |
+        | NAME:
+        |
+        input(type="text" id="name")
+        br
+        |
+        | stockQuantity:
+        |
+        input(type="text" id="stockQuantity")
+        |
+        | royalty:
+        |
+        input(type="text" id="royalty")
+        br
+        |  
+        | lastMonthSales:
+        |
+        input(type="text" id="lastMonthSales" disabled value="0")
+        |    
+        | page_num:
+        |
+        input(type="text" id="page_num")
+        br
+        |    
+        | price:
+        |
+        input(type="text" id="price")
+        |    
+        | pid:
+        |
+        select(id='pid') 
+        br
+        |      
+        | authors (format: fname,lname&fname2,lname2&...):
+        |
+        input(type="text" id="author(s)")
+        br
+        |          
+        | genres (format: genre1,genre2,genre3,...):
+        |
+        input(type="text" id="genre(s)")     
+        br
+        |
+        button(type = "button" id="createBook") Create Book
+        |    
     div
         br
         h1 Control Panel
@@ -17,4 +69,4 @@ body
                     ul
                     <p><a href="/removeBook/#{book.isbn}"> Remove </a>      ISBN: #{book.isbn} #{book.name}</p>
                 br
-
+    script(type="text/javascript" src="/eventHandle.js")

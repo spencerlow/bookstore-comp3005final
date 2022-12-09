@@ -65,8 +65,18 @@ else if(document.getElementById("checkoutSubmit")){
 }
 
 //does not trigger if placed in conditions
-document.getElementById("filter").onclick = search;
+if (document.getElementById("filter")){
+  document.getElementById("filter").onclick = search;
+}
+if (document.getElementById("createBook")){
+  document.getElementById("createBook").onclick = createBook;
+}
 
+
+
+function createBook(req,res){
+  console.log("clicked to create book");
+}
 
 function search(req,res){
     console.log("clicked to filter");
