@@ -263,35 +263,123 @@ const addUser = async (request, response) => {
 
 
 const searchQuery = async (request, response) => {
+  console.log(request.url);
+  console.log(request.url.split("?")[1].split("&"));
+  console.log(request.url.split("?")[1].split("&").length);
 
-  //get user table
-  const query = {
-    text: 'SELECT * FROM public.users ORDER BY uid ASC',
+  let attribute = request.url.split("?")[1].split("&")[0].split("=")[1];
+  let sort = request.url.split("?")[1].split("&")[1].split("=")[1];
+  let userInput = "";
+  //userinput is given
+  if (request.url.split("?")[1].split("&").length === 3)
+  {
+    userInput = request.url.split("?")[1].split("&")[2].split("=")[1];
+  }
+
+
+  let whereString = ""
+  if (userInput !== "")
+  {
+    whereString = " WHERE "+attribute+" = "+userInput;
+  }
+  let queryString;
+
+  //SELECT stockquantity,isbn,pid,lastmonthsales FROM public.book WHERE isbn=$1
+
+  console.log("attribute:"+attribute);
+  console.log("sort:"+sort);
+  console.log("userinput:"+userInput);
+
+  let qStr = "SELECT * FROM"
+  let table = ""
+
+  if (attribute === "ISBN" ||
+    attribute === "stockQuantity" ||
+    attribute === "royalty" ||
+    attribute === "lastMonthSales" ||
+    attribute === "page_Num" ||
+    attribute === "bookName" ||
+    attribute === "price"){
+      table = "public.book";
+      if (attribute === "bookName"){attribute = "name"};
+    }
+  else if (attribute === "orderID" ||
+  attribute === "cur_location" ||
+  attribute === "orderBilling" ||
+  attribute === "orderShipping"){
+    table = "public.orders";
+  }
+  else if(attribute === "orderQuantity"){
+    table = "public.order_contents";
+  }
+  else if (attribute === "pID" ||
+  attribute === "address" ||
+  attribute === "email" ||
+  attribute === "banking"){
+    table = "public.publisher";
+  }
+  else if (attribute === "phoneNumber"){
+    table = "public.has_numbers";
+  }
+  else if (attribute === "author" ||
+  attribute === "genre"){
+    table="public.book_records";
+  }
+  else if(attribute === "storeID" || attribute === "storeName"){
+    table = "public.bookstore";
+    if (attribute === "storeName"){attribute = "name"};
+  }
+  else if(attribute === "UID" ||
+  attribute === "userBilling" ||
+  attribute === "userShipping" ||
+  attribute === "account_type" ||
+  attribute === "cartID"){
+    table ="public.users";
+  }
+  else if(attribute === "cartQuantity"){
+    table ="public.cart";
+  }
+  else{
+    console.log("non-existing attribute");
+    return;
+  }
+
+let q1 = 'SELECT * FROM public.users ORDER BY UID ASC'
+let q2 = 'SELECT * FROM public.users'
+let q3 = ' ORDER BY UID ASC'
+
+qStr = qStr + " " + table + whereString + " ORDER BY " + attribute + " " + sort;
+console.log(qStr);
+
+//text: 'SELECT * FROM public.users ORDER BY UID ASC',
+  const query = {  
+    // text: 'SELECT * FROM $1 ORDER BY $2,$3',
+    // values: ['public.users','UID','ASC'],
+    text: qStr,
   }
   try{
     let results = await pool.query(query);
+    console.log(results.rows);
+
+    //console.log(results.fields.values());
+    let columns = {};
+    for(field of results.fields)
+    {
+      columns[field.name] = field.name;
+    }
+    console.log(columns);
+
+    //todo: ensure each attribute matches in POSTGRESQL
+    //todo: prevent selection reset?
+    //pug render
+    let data = pug.renderFile("search.pug",{table:results,columns,currUID:request.app.locals.currUID});
+    response.statusCode = 200;
+    response.send(data);
+
   }catch(err){
     console.log(err.detail);
     return;
   }
-
-  //get book table
-
-  //get order table
-
-  //get publisher table
-
-  //get phonenumber table
-
-  //get order contents table
-
-  //get bookstore?
-  //get book_records
-
-
-  let data = pug.renderFile("search.pug",{});
-  response.statusCode = 200;
-  response.send(data);
 }
 
 const reports = async (request, response) => {

@@ -37,7 +37,7 @@ app.get('/users/addUser',db.addUser)
 
 app.get('/search',search)
 
-app.get('/search?',db.searchQuery)
+app.get('/filter?',db.searchQuery)
 
 app.get('/reports',db.reports)
 app.get('/report/1',db.report1)
@@ -65,6 +65,6 @@ function changeUser(req, res)
 
 function search(req,res)
 {
-  res.status(200).send(pug.renderFile("search.pug",{currUID:app.locals.currUID,table:{}}));
+  res.status(200).send(pug.renderFile("search.pug",{currUID:app.locals.currUID,table:{rows:{}},columns:{}}));
   return;
 }

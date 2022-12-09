@@ -11,76 +11,64 @@ html
         div
             h1 
             div#dropMenu
-                //- p currentUser(UID): #{currUID}            
-                p Change user:
-                select(id='table') Test
-                    option ISBN
-                    option stockQuantity
-                    option royalty
-                    option lastMonthSales
-                    option page_Num
-                    option price 
-                    option bookName 
+                select(id='attributes') Test
+                    optgroup(label="book")
+                        option ISBN
+                        option stockQuantity
+                        option royalty
+                        option lastMonthSales
+                        option page_Num
+                        option price 
+                        option bookName 
+                    optgroup(label="orders") 
+                        option orderID 
+                        option cur_location
+                        option orderBilling 
+                        option orderShipping
+                    optgroup(label="order_contents") 
+                        option orderQuantity
+                    optgroup(label="publisher") 
+                        option pID
+                        option address
+                        option email 
+                        option banking
+                    optgroup(label="has_numebrs") 
+                        option phoneNumber
+                    optgroup(label="book_records") 
+                        option author
+                        option genre
+                    optgroup(label="bookstore") 
+                        option storeID
+                        option storeName
+                    optgroup(label="users") 
+                        option UID
+                        option userBilling
+                        option userShipping 
+                        option account_type 
+                        option cartID 
+                    optgroup(label="cart") 
+                        option cartQuantity
 
-                    option orderID 
-                    option cur_location
-                    option orderBilling 
-                    option orderShipping
+                //- if table.option
+                select(id='ordering') ordering
+                    option ASC 
+                    option DESC  
 
-                    option orderQuantity
-
-                    option pID
-                    option address
-                    option email 
-                    option banking
-
-                    option phoneNumber
-
-                    option author
-                    option genre
-
-                    option storeID
-                    option storeName
-
-                    option UID
-                    option userBilling
-                    option userShipping 
-                    option account_type 
-                    option cardID 
-
-                    option cartQuantity
+                input(type="text" id="userInput")               
 
                 button(type="button" id="filter") Submit
                 br
                 br
         
-        div 
-            each attribute in table
-                input(type="text" id="billing")
-                input(type="text" id="shipping")
-        
         div
-            //- table(border='2')
-            //-     tr
-            //-         th uid 
-            //-         th userbilling 
-            //-         th usershipping
-            //-         th account_type 
-            //-         th cartid 
-            //-         th storeid 
-                
-            //-     each user in users
-            //-         tr
-            //-             td
-            //-                 p #{user.uid} 
-            //-             td    
-            //-                 p #{user.userbilling}
-            //-             td    
-            //-                 p #{user.usershipping}
-            //-             td 
-            //-                 p #{user.account_type}
-            //-             td  
-            //-                 p #{user.cartid}
-            //-             td
-            //-                 p #{user.storeid}
+            table(border='2')
+                tr
+                    each attribute in columns
+                        th #{attribute}
+                        //- each value,key in attribute
+                each row in table.rows
+                    tr
+                    each attribute in columns
+                        td
+                            p #{row[attribute]} 
         script(type="text/javascript" src="/eventHandle.js")

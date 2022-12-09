@@ -59,20 +59,55 @@ console.log("test");
 if(document.getElementById("submit")){
   document.getElementById("submit").onclick = changeUser;
   document.getElementById("addUser").onclick = addUser;
-  document.getElementById("filter").onclick = search;
 }
 else if(document.getElementById("checkoutSubmit")){
   document.getElementById("checkoutSubmit").onclick = createOrder;
 }
 
+//does not trigger if placed in conditions
+document.getElementById("filter").onclick = search;
 
 
-function search(){
+function search(req,res){
     console.log("clicked to filter");
 
-    //let newurl = "/seach?"    
-    //console.log(document.getElementById("userSelect").value)
-    //window.location.href = window.location.href;
+    let newurl = window.location.href;
+
+    if (newurl.includes("search"))
+    {
+      newurl = window.location.href.split("/search")[0] + "/filter?"
+    }
+    else//already has a previous filter....
+    {
+      newurl = window.location.href.split("/filter?")[0] + "/filter?"
+    }
+
+    let attribute = document.getElementById("attributes").value;
+    let sort = document.getElementById("ordering").value;
+
+    if (attribute === "")
+    {
+      alert("must select attribute to search with");
+      return;
+    }
+    if (sort === "")
+    {
+      alert("must select sorting method");
+      return;
+    }
+
+    newurl = newurl + "attribute=" + attribute + "&" + "sort=" + sort;
+
+    if (document.getElementById("userInput").value !== "")
+    {
+      let userInput = document.getElementById("userInput").value;
+      userInput = userInput.trim();
+      userInput = userInput.replaceAll(" ","+");
+      newurl = newurl + "&userInput=" + userInput;
+    }
+
+    console.log(newurl)
+    window.location.href = newurl;
     //+ "=" + document.getElementById("userSelect").value;
   }
 
