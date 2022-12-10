@@ -22,7 +22,6 @@ app.get('/', async(request, response) => {
 app.locals.currUID = 0;
 // local variable for the next UID if a new user is made?:
 //local variable for current URL
-
 app.get('/books', db.getBooks)
 app.get('/book/:isbn', db.getBookInfo)
 app.get('/addCart/:isbn', db.addCart)

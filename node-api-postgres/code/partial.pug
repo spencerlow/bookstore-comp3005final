@@ -1,20 +1,22 @@
-div
-    | currentUser(UID): #{currUID}
-    |
-    | <a href="/getCart/"> Cart </a>
+link(href="./css/partial.css" rel="stylesheet")
+div(id="userArea")
+    div(id = "insideUserArea")
+        | currentUser(UID): #{currUID}
+        |
+        | <a href="/getCart/"> Cart </a>
 div(id="redirect")
     |
-    a(href="/books") Home 
+    a(href="/books" class="tab") Home 
     |   
-    a(href="/users") Users
+    a(href="/users" class="tab") Users
     |
     |   
-    a(href="/search") Search
+    a(href="/search" class="tab") Search
     |
     if currUID == 0
         |
         |
-        a(href="/reports") Reports
+        a(href="/reports" class="tab" id="reports") Reports
         |
         |
-        a(href="/controlPanel") Control Panel
+        a(href="/controlPanel" class="tab" id="controlPanel") Control Panel

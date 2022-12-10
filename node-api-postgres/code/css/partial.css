@@ -1,0 +1,77 @@
+#redirect
+{
+	display: flex;
+	height: 29px;
+	background-color: rgba(227, 193, 201, 0.361);
+	align-items: center;
+	border: 3px inset rgb(116, 0, 0);
+	justify-content: center;
+}
+#userArea
+{
+	/* display: inline-block; */
+	height: 30px;
+	margin-inline: 10px;
+	padding-top: 5px;
+	padding-bottom: 3px;
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: rgba(170, 0, 0, 0.708);
+	align-items: center;
+	border: 3px inset rgb(116, 0, 0);
+}
+
+#userArea:hover
+{
+	border-color: rgba(255, 255, 255, 0.708);
+	border-style: double;
+}
+
+.tab:hover
+{
+	border: 3px groove rgb(11, 0, 64);
+}
+
+.tab
+{
+	border: 3px groove rgb(223, 211, 211);
+	background-color: aliceblue;
+	padding: 2px
+}
+
+#insideUserArea
+{
+	border: 3px groove rgb(233, 185, 185);
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	padding-top: 2px;
+	padding: 3px;
+	background-color: aliceblue;
+}
+
+#reports
+{
+	background-color: blanchedalmond;
+}
+
+#controlPanel
+{
+	background-color: blanchedalmond;
+}
+
+#contents
+{
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	/* background-color: black; */
+}
+
+.searchContents
+{
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	/* background-color: black; */
+}

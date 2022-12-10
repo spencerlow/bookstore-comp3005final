@@ -3,12 +3,12 @@ html(lang='en')
 
 html
     head
-        title SEARCH
+        title title Look Inna Book - SEARCH
         //- ?isbn=...&price=...
     body
         include ./partial.pug
         
-        div
+        div(class="searchContents")
             h1 
             div#dropMenu
                 select(id='attributes') Test
@@ -60,7 +60,7 @@ html
                 br
                 br
         
-        div
+        div(class="searchContents")
             table(border='2')
                 tr
                     each attribute in columns
