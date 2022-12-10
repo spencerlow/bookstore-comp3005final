@@ -10,6 +10,7 @@ const pool = new Pool({
 })
 
 const fs = require('fs');
+const { Console } = require('console');
 
 async function databaseInit(req,res){
   console.log("Initializing Database");
@@ -151,7 +152,7 @@ const createOrder = async (request, response) => {
     values: [request.app.locals.currUID], 
   }
   let books = await pool.query(bookQuery);
-  console.log(books.rows)
+  //console.log(books.rows)
   books.rows.forEach (async (element) => {
     const insertContentsQuery = {
       text: 'INSERT into public.order_contents VALUES ($1,$2,$3)',
@@ -163,7 +164,7 @@ const createOrder = async (request, response) => {
     }catch(err){
       console.log(err);
     }
-    console.log(element,element.isbn)
+    //console.log(element,element.isbn)
     const updateStockQuery = {
       text: 'UPDATE public.book SET stockquantity= stockquantity - 1 WHERE isbn=$1',
       values: [element.isbn],
@@ -235,14 +236,14 @@ const addUser = async (request, response) => {
     return;
   }
 
-  console.log("in here");
-  console.log("nextuid:" + nextUID);
+  //console.log("in here");
+  //console.log("nextuid:" + nextUID);
 
-  console.log(request.url);
+  //console.log(request.url);
   let shipping = request.url.split("?")[1].split("&")[0].split("=")[1];
   let billing = request.url.split("?")[1].split("&")[1].split("=")[1];
-  console.log("shipping | " + shipping);
-  console.log("billing | " + billing);
+  //console.log("shipping | " + shipping);
+  //console.log("billing | " + billing);
   shipping = shipping.replaceAll("_"," ");
   billing = billing.replaceAll("_"," ");
 
@@ -254,6 +255,7 @@ const addUser = async (request, response) => {
   }
   try{
     let results = await pool.query(query2);
+    console.log("New user created with UID"+nextUID);
   }catch(err){
     console.log(err.detail);
     return;
@@ -263,9 +265,9 @@ const addUser = async (request, response) => {
 
 
 const searchQuery = async (request, response) => {
-  console.log(request.url);
-  console.log(request.url.split("?")[1].split("&"));
-  console.log(request.url.split("?")[1].split("&").length);
+  //console.log(request.url);
+  //console.log(request.url.split("?")[1].split("&"));
+  //console.log(request.url.split("?")[1].split("&").length);
 
   let attribute = request.url.split("?")[1].split("&")[0].split("=")[1];
   let sort = request.url.split("?")[1].split("&")[1].split("=")[1];
@@ -286,9 +288,9 @@ const searchQuery = async (request, response) => {
 
   //SELECT stockquantity,isbn,pid,lastmonthsales FROM public.book WHERE isbn=$1
 
-  console.log("attribute:"+attribute);
-  console.log("sort:"+sort);
-  console.log("userinput:"+userInput);
+  //console.log("attribute:"+attribute);
+  //console.log("sort:"+sort);
+  //console.log("userinput:"+userInput);
 
   let qStr = "SELECT * FROM"
   let table = ""
@@ -340,7 +342,7 @@ const searchQuery = async (request, response) => {
     table ="public.cart";
   }
   else{
-    console.log("non-existing attribute");
+    console.log("Searched non-existing attribute");
     return;
   }
 
@@ -349,7 +351,7 @@ let q2 = 'SELECT * FROM public.users'
 let q3 = ' ORDER BY UID ASC'
 
 qStr = qStr + " " + table + whereString + " ORDER BY " + attribute + " " + sort;
-console.log(qStr);
+//console.log(qStr);
 
 //text: 'SELECT * FROM public.users ORDER BY UID ASC',
   const query = {  
@@ -359,7 +361,7 @@ console.log(qStr);
   }
   try{
     let results = await pool.query(query);
-    console.log(results.rows);
+    //console.log(results.rows);
 
     //console.log(results.fields.values());
     let columns = {};
@@ -367,7 +369,7 @@ console.log(qStr);
     {
       columns[field.name] = field.name;
     }
-    console.log(columns);
+    //console.log(columns);
 
     //todo: ensure each attribute matches in POSTGRESQL
     //todo: prevent selection reset?
@@ -469,8 +471,11 @@ const controlPanel = async (request, response) => {
   let publisher = await pool.query('SELECT * FROM public.publisher'); 
   let books = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC');
 
+  let successAdd="";
   
   if (request.url.includes("?")){
+    successAdd = true;
+
     let newbook = {};
     const info = request.url.split("?")[1].split("&")
     for (q of info)
@@ -485,9 +490,9 @@ const controlPanel = async (request, response) => {
         newbook.genre = q.split("=")[1].split("+");
       }
     }
-    console.log(newbook);
-    console.log(newbook.genre.length);
-    console.log(newbook.author.length);
+    //console.log(newbook);
+    //console.log(newbook.genre.length);
+    //console.log(newbook.author.length);
 
     //add to book
     const bookQuery = {
@@ -498,10 +503,12 @@ const controlPanel = async (request, response) => {
       let result = await pool.query(bookQuery);
     }catch(err){
       console.log(err.detail);
+      successAdd = false;
       //console.log(err);
       //update book if exists.?
     }
 
+    //get phonenumbers
     let phonenumbers;
     const phonequery = {
       text: 'SELECT * FROM public.has_numbers WHERE pid = $1',
@@ -512,12 +519,11 @@ const controlPanel = async (request, response) => {
     }catch(err){
       console.log(err.detail);
     }
-    console.log(phonenumbers.rows);
-    console.log("pid:"+newbook.pid)
+    //console.log(phonenumbers.rows);
+    //console.log("pid:"+newbook.pid)
    
     //add to records for:
       //each genre, of every author, of every phonenumber
-
     for (genre of newbook.genre)
     {
       for (author of newbook.author)
@@ -525,9 +531,6 @@ const controlPanel = async (request, response) => {
         for (phonerow of phonenumbers.rows)
         {
           //console.log(genre+"|"+author+"|"+phonerow.phonenumber);
-
-
-
           const recordQuery = {
             text: 'INSERT into public.book_records VALUES ($1,$2,$3,$4,$5)',
             values: [newbook.isbn, 0, phonerow.phonenumber, author, genre],
@@ -536,19 +539,19 @@ const controlPanel = async (request, response) => {
             await pool.query(recordQuery);
           }catch(err){
             console.log(err.detail);
-            console.log(err);
+            //console.log(err);
+            successAdd = false;
           }
         }
       }
     }
-    
-
-
-
-
-
   }
-  let data = pug.renderFile("controlPanel.pug",{books:books.rows,currUID:request.app.locals.currUID,publisher:publisher.rows});
+  if (successAdd === true)
+  {
+    console.log("Book added.");
+  }
+
+  let data = pug.renderFile("controlPanel.pug",{books:books.rows,currUID:request.app.locals.currUID,publisher:publisher.rows,successAdd:successAdd});
   response.statusCode = 200;
   response.send(data);
 }
