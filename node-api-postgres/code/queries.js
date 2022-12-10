@@ -466,9 +466,89 @@ const report3 = async (request, response) => {
 }
 
 const controlPanel = async (request, response) => {
+  let publisher = await pool.query('SELECT * FROM public.publisher'); 
   let books = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC');
-  //console.log("BOOKS",books.rows);
-  let data = pug.renderFile("controlPanel.pug",{books:books.rows,currUID:request.app.locals.currUID});
+
+  
+  if (request.url.includes("?")){
+    let newbook = {};
+    const info = request.url.split("?")[1].split("&")
+    for (q of info)
+    {
+      if (q.split("=")[0] !== "author" && q.split("=")[0] !== "genre"){
+        newbook[q.split("=")[0]] = q.split("=")[1]
+      }
+      else if(q.split("=")[0] === "author"){
+        newbook.author = q.split("=")[1].replaceAll("_"," ").split("+");
+      }
+      else if(q.split("=")[0] ==="genre"){
+        newbook.genre = q.split("=")[1].split("+");
+      }
+    }
+    console.log(newbook);
+    console.log(newbook.genre.length);
+    console.log(newbook.author.length);
+
+    //add to book
+    const bookQuery = {
+      text: 'INSERT into public.book VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
+      values: [newbook.isbn,newbook.name,newbook.stockQuantity,newbook.royalty,newbook.lastMonthSales,newbook.page_num,newbook.price,newbook.pid],
+    }
+    try{
+      let result = await pool.query(bookQuery);
+    }catch(err){
+      console.log(err.detail);
+      //console.log(err);
+      //update book if exists.?
+    }
+
+    let phonenumbers;
+    const phonequery = {
+      text: 'SELECT * FROM public.has_numbers WHERE pid = $1',
+      values: [newbook.pid],
+    }
+    try{
+      phonenumbers = await pool.query(phonequery);
+    }catch(err){
+      console.log(err.detail);
+    }
+    console.log(phonenumbers.rows);
+    console.log("pid:"+newbook.pid)
+   
+    //add to records for:
+      //each genre, of every author, of every phonenumber
+
+    for (genre of newbook.genre)
+    {
+      for (author of newbook.author)
+      {
+        for (phonerow of phonenumbers.rows)
+        {
+          //console.log(genre+"|"+author+"|"+phonerow.phonenumber);
+
+
+
+          const recordQuery = {
+            text: 'INSERT into public.book_records VALUES ($1,$2,$3,$4,$5)',
+            values: [newbook.isbn, 0, phonerow.phonenumber, author, genre],
+          }
+          try{
+            await pool.query(recordQuery);
+          }catch(err){
+            console.log(err.detail);
+            console.log(err);
+          }
+        }
+      }
+    }
+    
+
+
+
+
+
+  }
+  let data = pug.renderFile("controlPanel.pug",{books:books.rows,currUID:request.app.locals.currUID,publisher:publisher.rows});
   response.statusCode = 200;
   response.send(data);
 }

@@ -76,6 +76,74 @@ if (document.getElementById("createBook")){
 
 function createBook(req,res){
   console.log("clicked to create book");
+
+  let isbn= document.getElementById("isbn").value;
+  let name= document.getElementById("name").value;
+  let stockQuantity= document.getElementById("stockQuantity").value;
+  let royalty= document.getElementById("royalty").value;
+  let lastMonthSales= document.getElementById("lastMonthSales").value;
+  let page_num= document.getElementById("page_num").value;
+  let price= document.getElementById("price").value;
+  let pid= document.getElementById("pid").value;
+  let author= document.getElementById("author").value;
+  let genre= document.getElementById("genre").value;
+  
+
+  if (isbn === "" ||
+      name === "" ||
+      stockQuantity === "" ||
+      royalty === "" ||
+      lastMonthSales === "" ||
+      page_num === "" ||
+      price === "" ||
+      pid === "" ||
+      author === "" ||
+      genre === "")
+  {
+    alert("must fill all inputs to create book");
+    return;
+  }
+
+  isbn = isbn.trim();
+  name = name.trim();
+  stockQuantity = stockQuantity.trim();
+  royalty = royalty.trim();
+  lastMonthSales = lastMonthSales.trim();
+  page_num = page_num.trim();
+  price = price.trim();
+  pid = pid.trim();
+  
+  author = author.trim();
+  author = author.replaceAll(",","_");
+  author = author.replaceAll("&","+");
+
+  genre = genre.trim();
+  genre = genre.replaceAll(",","+");
+
+
+  // let newurl = window.location.href.split("/controlPanel")[0]+"/addBook?"+
+  // "isbn="+isbn+"&name="+name+"&stockQuantity="+stockQuantity+
+  // "&royalty="+royalty+"&lastMonthSales="+lastMonthSales+"&page_num="+
+  // page_num+"&price="+price+"&pid="+pid+"&author="+author+"&genre="+genre;
+  let newurl = window.location.href
+  if (newurl.includes("?"))
+  {
+    newurl = newurl.split("?")[0]+"?"+
+    "isbn="+isbn+"&name="+name+"&stockQuantity="+stockQuantity+
+    "&royalty="+royalty+"&lastMonthSales="+lastMonthSales+"&page_num="+
+    page_num+"&price="+price+"&pid="+pid+"&author="+author+"&genre="+genre;
+  }
+  else
+  {
+    newurl = newurl+"?"+
+    "isbn="+isbn+"&name="+name+"&stockQuantity="+stockQuantity+
+    "&royalty="+royalty+"&lastMonthSales="+lastMonthSales+"&page_num="+
+    page_num+"&price="+price+"&pid="+pid+"&author="+author+"&genre="+genre;
+  }
+   
+
+
+  window.location.href = newurl;
 }
 
 function search(req,res){

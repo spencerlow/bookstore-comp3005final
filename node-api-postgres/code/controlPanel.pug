@@ -22,39 +22,41 @@ body
         |
         | stockQuantity:
         |
-        input(type="text" id="stockQuantity")
+        input(type="number" id="stockQuantity" value="0")
         |
         | royalty:
         |
-        input(type="text" id="royalty")
+        input(type="number" id="royalty" value="0")
         br
         |  
         | lastMonthSales:
         |
-        input(type="text" id="lastMonthSales" disabled value="0")
+        input(type="number" id="lastMonthSales" disabled value="0")
         |    
         | page_num:
         |
-        input(type="text" id="page_num")
+        input(type="number" id="page_num" value="0")
         br
         |    
         | price:
         |
-        input(type="text" id="price")
+        input(type="number" id="price" value="0")
         |    
         | pid:
         |
         select(id='pid') 
+            each pub in publisher
+                            option #{pub.pid}
         br
         |      
-        | authors (format: fname,lname&fname2,lname2&...):
+        | author(s) (format: fname,lname&fname2,lname2&...):
         |
-        input(type="text" id="author(s)")
+        input(type="text" id="author" value = "bob,ross&george,ross")
         br
         |          
-        | genres (format: genre1,genre2,genre3,...):
+        | genre(s) (format: genre1,genre2,genre3,...):
         |
-        input(type="text" id="genre(s)")     
+        input(type="text" id="genre" value = "mystery,horror")     
         br
         |
         button(type = "button" id="createBook") Create Book
