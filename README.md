@@ -1,4 +1,14 @@
-# bookstore-comp3005final
+<h1> # bookstore-comp3005final </h1>
+
+<h3>
+
+Members | Github
+------------ | -------------
+Kaushik Paul | https://github.com/Kxushik
+Spencer Low | https://github.com/spencerlow
+
+</h3>
+
 COMP 3005 Project (Fall 2022) ; Instructor: Ahmed El-Roby and Abdelghny Orogat
 
 1. Install PostgreSQL 15.1 for Windows {https://www.enterprisedb.com/downloads/postgres-postgresql-downloads}
