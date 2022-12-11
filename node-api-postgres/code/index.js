@@ -54,9 +54,6 @@ console.log(`App running on port localhost:${port}.`)
 
 function changeUser(req, res)
 {
-  console.log('test');
-  console.log(req.url.split('=')[0]);
-  console.log(req.url.split('=')[1]);
   app.locals.currUID = req.url.split('=')[1];
   res.status(200).redirect("http://localhost:3000/users");
   return;

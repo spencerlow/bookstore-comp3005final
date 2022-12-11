@@ -3,27 +3,26 @@
 3. install Node.js through google
 4. {npm init -y}
 5. Install Express for server, node-postgres for connection, pug for web display {npm i express pg pug}
-6. PGADMIN Object -> Create -> Database -> Database:"bookstore"
+6. Select PostgreSQL server then PGADMIN Object -> Create -> Database -> Database:"bookstore"
 7. Check properties of server group "postgresql14"
 
 
-UPDATE queiries.js with it.
+UPDATE queries.js with it.
+Note: Password may have to be pgadmin server password
 
 const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'bookstore',
-  password: 'Kaushik12!',
+  password: 'password',
   port: 5432,
 })
 
 Now you have to make a table, and entries for test.
 
-8. Start server with {node index.js}
+8. Navigate to ./code directory (within node-api-postgres) & start server with {node index.js}
 
 
 
-
-
-https://stackoverflow.com/questions/52104833/how-to-create-table-after-first-creating-a-database-with-node-and-pg
+TIP: If there is a freeze in the console (powershell), go to properties -> Edit Options -> Uncheck Quick Edit Mode
