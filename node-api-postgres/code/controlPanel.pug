@@ -13,20 +13,20 @@ body
         |
         | ISBN:
         |
-        input(type="text" id="isbn")
+        input(type="text" id="isbn" placeholder="0001112223334")
         |
         | NAME:
         |
-        input(type="text" id="name")
+        input(type="text" id="name" placeholder="ToyStory")
         br
         |
         | stockQuantity:
         |
-        input(type="number" id="stockQuantity" value="0")
+        input(type="number" id="stockQuantity" placeholder="10")
         |
         | royalty:
         |
-        input(type="number" id="royalty" value="0")
+        input(type="number" id="royalty" placeholder="5")
         br
         |  
         | lastMonthSales:
@@ -35,12 +35,12 @@ body
         |    
         | page_num:
         |
-        input(type="number" id="page_num" value="0")
+        input(type="number" id="page_num" placeholder="15")
         br
         |    
         | price:
         |
-        input(type="number" id="price" value="0")
+        input(type="number" id="price" placeholder="5")
         |    
         | pid:
         |
@@ -51,12 +51,12 @@ body
         |      
         | author(s) (format: fname,lname&fname2,lname2&...):
         |
-        input(type="text" id="author" value = "bob,ross&george,ross")
+        input(type="text" id="author" placeholder = "bob,ross&george,ross")
         br
         |          
         | genre(s) (format: genre1,genre2,genre3,...):
         |
-        input(type="text" id="genre" value = "mystery,horror")     
+        input(type="text" id="genre" placeholder = "mystery,horror")     
         br
         |
         button(type = "button" id="createBook") Create Book
