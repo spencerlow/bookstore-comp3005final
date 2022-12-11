@@ -29,3 +29,6 @@ Now you have to make a table, and entries for test.
 
 
 TIP: If there is a freeze in the console (powershell), go to properties -> Edit Options -> Uncheck Quick Edit Mode
+
+
+<img alt="owner_view" width="600" src="./gifs/owner_view.gif">
