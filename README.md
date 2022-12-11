@@ -21,9 +21,10 @@ Spencer Low | https://github.com/spencerlow
 7. Check properties of server group "postgresql14"
 ---
 
-UPDATE queries.js with it.
-Note: Password may have to be pgadmin server password
-
+**UPDATE queries.js with it.**
+<br>
+`Note: Password may have to be pgadmin server password`
+```ruby
 const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'postgres',
@@ -32,7 +33,7 @@ const pool = new Pool({
   password: 'password',
   port: 5432,
 })
-
+```
 Now you have to make a table, and entries for test.
 
 8. Navigate to ./code directory (within node-api-postgres) & start server with {node index.js}
