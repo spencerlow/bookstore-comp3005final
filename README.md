@@ -47,6 +47,7 @@ Now you have to make a table, and entries for test.
 <img align="left" alt="owner_view" height="200" src="./gifs/owner_view.gif">
 <img align="right" alt="restock" height="200" src="./screenshots/console_restocking_feedback.png">
 <br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br>
 ---
 <h2> Relational schema</h2>
 <img alt="relational" src="./diagrams/bookstore-ER-DIAGRAM (relation schema).png">
