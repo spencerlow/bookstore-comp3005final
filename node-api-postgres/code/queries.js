@@ -14,7 +14,9 @@ const { Console } = require('console');
 
 async function databaseInit(req,res){
   console.log("Initializing Database");
+  // Insert all tables
   let ddl_insert = await pool.query(fs.readFileSync('../sql/ddl.sql').toString());
+  // Try inserting all mock_data, throws err if exists
   try{
     let dml_insert = await pool.query(fs.readFileSync('../sql/mock_data.sql').toString());
   }catch(err)
@@ -26,13 +28,16 @@ async function databaseInit(req,res){
 databaseInit();
 
 const getBooks = async (request, response) => {
+  //Query for all books
   let books = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC');
   (books.rows) = Promise.all(books.rows.map(async book => {
+    // Query for all multi-val (author + genre) per book
     const query = {
       text: 'SELECT author,genre FROM public.book_records WHERE isbn = $1',
       values: [book.isbn],
     }
     let auth_gen = await pool.query(query);
+    // Modify original book query and map those attributes for output
     result = ({
       ...book,
       authors:auth_gen.rows.map(element=>element.author),
@@ -40,6 +45,7 @@ const getBooks = async (request, response) => {
     })
     return result
     })).then((res,rej)=>{
+      // Render and serve page
       let data = pug.renderFile("index.pug",{books:res,currUID:request.app.locals.currUID});
       response.statusCode = 200;
       response.send(data);
@@ -47,6 +53,7 @@ const getBooks = async (request, response) => {
 }
 
 const addCart = async (request, response) => {
+  // Insert new book into cart of user
   const query = {
     text: 'INSERT into public.cart VALUES ($1,$2,$3)',
     values: [request.app.locals.currUID,request.params.isbn,1],
@@ -59,6 +66,7 @@ const addCart = async (request, response) => {
 }
 
 const removeFromCart = async (request, response) => {
+  // Query delete specified UID and isbn from cart relation
   const query = {
     text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
     values: [request.app.locals.currUID,request.params.isbn],
@@ -68,11 +76,14 @@ const removeFromCart = async (request, response) => {
   }catch(err){
     console.log(err.detail);
   }  
+  // Redirect back to fresh cart page
   response.redirect("/getCart");
 }
 
 
 const getBookInfo = async (request, response) => {
+  // Not used-> but exists for future implementation
+  // Query for a book with isbn
   const query = {
     text: 'SELECT * FROM public.book WHERE isbn = $1',
     values: [request.params.isbn],
@@ -87,18 +98,22 @@ const getBookInfo = async (request, response) => {
     
   });
 }
+
 const getCart = async (request, response) => {
+  // Grab all books in cart
   const query = {
     text: 'SELECT * FROM public.cart WHERE uid = $1',
     values: [request.app.locals.currUID], 
   }
   let books = await pool.query(query);
   (books.rows) = Promise.all(books.rows.map(async book => {
+    // Grab all information for each book in cart
     const query = {
       text: 'SELECT name, stockquantity, price FROM public.book WHERE isbn = $1',
       values: [book.isbn],
     }
     let addOn = await pool.query(query);
+    // Modify object to add new attribute
     result = ({
       ...book,
       name:addOn.rows.map(element=>element.name),
@@ -107,6 +122,7 @@ const getCart = async (request, response) => {
     })
     return result
     })).then((res,rej)=>{
+      // Combine total price for cart
       let total = 0;
       res.forEach(element => {
         total += (parseFloat(element.price));
@@ -120,6 +136,7 @@ const getCart = async (request, response) => {
         if (error) {
           throw error
         }
+        // Render and serve page
         let data = pug.renderFile("cart.pug",{books:res,user:results.rows[0],cartTotal:total.toFixed(2)});
         response.statusCode = 200;
         response.send(data);
@@ -129,11 +146,14 @@ const getCart = async (request, response) => {
   });
 }
 const createOrder = async (request, response) => {
+  // Get next free orderID
   let nextOrderID = await pool.query('SELECT COUNT(*) FROM public.orders');
+  // Parse url for shipping + billing
   let shipping = request.url.split("?")[1].split("&")[0].split("=")[1];
   let billing = request.url.split("?")[1].split("&")[1].split("=")[1];
   shipping = shipping.replaceAll("_"," ");
   billing = billing.replaceAll("_"," ");
+  // Insert a new order into relation
   const orderQuery = {
     text: 'INSERT into public.Orders VALUES ($1,$2,$3,$4,$5)',
     values: [nextOrderID.rows[0].count,"warehouse",request.app.locals.currUID,billing,shipping],
@@ -143,12 +163,14 @@ const createOrder = async (request, response) => {
   }catch(err){
     console.log(err.detail);
   }
+  //Obtain all books that were submitted for order from cart
   const bookQuery = {
     text: 'SELECT * FROM public.cart WHERE uid = $1',
     values: [request.app.locals.currUID], 
   }
   let books = await pool.query(bookQuery);
   books.rows.forEach (async (element) => {
+    //Insert into order_contents relation
     const insertContentsQuery = {
       text: 'INSERT into public.order_contents VALUES ($1,$2,$3)',
       values: [nextOrderID.rows[0].count,element.isbn,element.cartquantity],
@@ -159,12 +181,13 @@ const createOrder = async (request, response) => {
     }catch(err){
       console.log(err);
     }
+    //Update stock of sold book
     const updateStockQuery = {
       text: 'UPDATE public.book SET stockquantity= stockquantity - 1 WHERE isbn=$1',
       values: [element.isbn],
     }
     let results1 = await pool.query(updateStockQuery);
-
+    //Check stock of book, if less than threshold send email
     const checkStockQuery = {
       text: 'SELECT stockquantity,isbn,pid,lastmonthsales FROM public.book WHERE isbn=$1',
       values: [element.isbn],
@@ -191,17 +214,20 @@ const createOrder = async (request, response) => {
       console.log("")
     }
     
+    //Delete all books in the cart of order
     const deleteCartQuery = {
       text: 'DELETE from public.cart WHERE uid=$1 AND isbn=$2',
       values: [request.app.locals.currUID,element.isbn],
     }
     let results3 = await pool.query(deleteCartQuery);
   });
+  //Redirect back to cart page
   response.statusCode = 200;
   response.redirect("/getCart");
 }
 
 const getUsers = (request, response) => {
+  //Query to get user with uid asc
   pool.query('SELECT * FROM public.users ORDER BY uid ASC', (error, results) => {
     if (error) 
     {
@@ -218,7 +244,7 @@ const addUser = async (request, response) => {
 
   let nextUID = 0;
 
-//find nextUID
+  //Query for next user id
   const query = {
     text: 'SELECT * FROM public.users ORDER BY uid ASC',
   }
@@ -230,10 +256,7 @@ const addUser = async (request, response) => {
     return;
   }
 
-  //console.log("in here");
-  //console.log("nextuid:" + nextUID);
-
-  //console.log(request.url);
+  // Parse url for shipping + billing
   let shipping = request.url.split("?")[1].split("&")[0].split("=")[1];
   let billing = request.url.split("?")[1].split("&")[1].split("=")[1];
   //console.log("shipping | " + shipping);
@@ -243,7 +266,7 @@ const addUser = async (request, response) => {
 
 //create new user
   const query2 = {
-    // uid,userbilling,usershipping,account_type,cardid,storeid
+    // Insert new stuff into relation uid,userbilling,usershipping,account_type,cardid,storeid
     text: 'INSERT into public.users VALUES ($1,$2,$3,$4,$5,$6)',
     values: [nextUID,shipping,billing,"customer",nextUID,1],
   }
@@ -258,10 +281,7 @@ const addUser = async (request, response) => {
 
 
 const searchQuery = async (request, response) => {
-  //console.log(request.url);
-  //console.log(request.url.split("?")[1].split("&"));
-  //console.log(request.url.split("?")[1].split("&").length);
-
+  // Parse for attr, sort, and input
   let attribute = request.url.split("?")[1].split("&")[0].split("=")[1];
   let sort = request.url.split("?")[1].split("&")[1].split("=")[1];
   let userInput = "";
@@ -271,43 +291,8 @@ const searchQuery = async (request, response) => {
     userInput = request.url.split("?")[1].split("&")[2].split("=")[1];
   }
 
-
+  // Build query string
   let whereString = ""
-  // if (userInput !== "")
-  // {
-  //   console.log("           comparing:" + attribute);
-  //   if (attribute === "ISBN" ||
-  //       attribute === "bookName" ||
-  //       attribute === "address" ||
-  //       attribute === "email" ||
-  //       attribute === "banking" ||
-  //       attribute === "storeName" ||
-  //       attribute === "userBilling" ||
-  //       attribute === "userShipping" ||
-  //       attribute === "account_type" ||
-  //       attribute === "cur_location" ||
-  //       attribute === "orderBilling" ||
-  //       attribute === "orderShipping" ||
-  //       attribute === "phonenumber" ||
-  //       attribute === "author" ||
-  //       attribute === "genre")
-  //       { 
-  //         console.log("           p1");
-  //         whereString = " WHERE "+attribute+" = "+ "'" +userInput +"'";
-  //       }
-  //       else{
-  //         console.log("                 p2");
-  //         whereString = " WHERE "+attribute+" = "+userInput;
-  //       }
-    
-  // }
-  let queryString;
-
-  //SELECT stockquantity,isbn,pid,lastmonthsales FROM public.book WHERE isbn=$1
-
-  //console.log("attribute:"+attribute);
-  //console.log("sort:"+sort);
-  //console.log("userinput:"+userInput);
 
   let qStr = "SELECT * FROM"
   let table = ""
@@ -398,8 +383,8 @@ let q1 = 'SELECT * FROM public.users ORDER BY UID ASC'
 let q2 = 'SELECT * FROM public.users'
 let q3 = ' ORDER BY UID ASC'
 
+//build query string
 qStr = qStr + " " + table + whereString + " ORDER BY " + attribute + " " + sort;
-console.log(qStr);
 
 //text: 'SELECT * FROM public.users ORDER BY UID ASC',
   const query = {  
@@ -409,31 +394,24 @@ console.log(qStr);
   }
   try{
     let results = await pool.query(query);
-    console.log(results.rows);
-
-    //console.log(results.fields.values());
     let columns = {};
     for(field of results.fields)
     {
       columns[field.name] = field.name;
     }
-    //console.log(columns);
-
-    //todo: ensure each attribute matches in POSTGRESQL
-    //todo: prevent selection reset?
     //pug render
     let data = pug.renderFile("search.pug",{table:results,columns,currUID:request.app.locals.currUID});
     response.statusCode = 200;
     response.send(data);
 
   }catch(err){
-    //console.log(err.detail);
     console.log(err);
     return;
   }
 }
 
 const reports = async (request, response) => {
+  //List reports + rid so it can direct
   let report1 ={name:"Sales vs Expenses",rid:"1"};
   let report2 ={name:"Sales by Author", rid:"2"};
   let report3 ={name:"Sales by Genre",rid:"3"};
@@ -452,15 +430,19 @@ const report1 = async (request, response) => {
     text: 'SELECT isbn, count(*) FROM public.order_contents WHERE isbn IS NOT NULL GROUP BY isbn',
   }
   try{
+    //Grab ordered books
     let books_ordered = await pool.query(query);
     (books_ordered.rows) = Promise.all(books_ordered.rows.map(async book => {
+      //Get info per book
       const bookInfoQuery = {
         text: 'SELECT * FROM public.book where isbn=$1',
         values:[book.isbn],
       }
       let bookInfo = await pool.query(bookInfoQuery);
+      //Calculate net income + expense
       let net_in_calc = (parseInt(book.count) *parseFloat(bookInfo.rows[0].price)).toFixed(2);
       let expense_calc = (net_in_calc * parseFloat((bookInfo.rows[0].royalty)/100)).toFixed(2);
+      //Add attributes to object
       result = ({
         ...book,
         name:bookInfo.rows.map(element=>element.name),
@@ -471,11 +453,13 @@ const report1 = async (request, response) => {
       })
       return result
       })).then((res,rej)=>{
+        //Calculate total value of book sale
         let total = 0;
         res.forEach(element => {
           total += (parseFloat(element.net_prof));
         });
         total = total.toFixed(2)
+        //Render and server pug
         let data = pug.renderFile("./reports/report1.pug",{sales:res,total});
         response.statusCode = 200;
         response.send(data);
@@ -487,11 +471,13 @@ const report1 = async (request, response) => {
 }
 const report2 = async (request, response) => {
   //REPORT 2 -> SALES PER AUTHOR
+  //Query count for each author
   const query = {
     text: 'SELECT book_records.author,  COUNT(book_records.isbn) FROM book_records LEFT JOIN order_contents ON book_records.isbn = order_contents.isbn GROUP BY book_records.author',
   }
   try{
     let auth_count = await pool.query(query);
+    //Render and Serve
     let data = pug.renderFile("./reports/report2.pug",{sales:auth_count.rows});
     response.statusCode = 200;
     response.send(data);
@@ -502,11 +488,13 @@ const report2 = async (request, response) => {
 }
 const report3 = async (request, response) => {
   //REPORT 3 -> SALES PER GENRE
+   //Query count for each Genre
   const query = {
     text: 'SELECT book_records.genre,  COUNT(book_records.isbn) FROM book_records LEFT JOIN order_contents ON book_records.isbn = order_contents.isbn GROUP BY book_records.genre',
   }
   try{
     let gen_count = await pool.query(query);
+    //Render and serve
     let data = pug.renderFile("./reports/report3.pug",{sales:gen_count.rows});
     response.statusCode = 200;
     response.send(data);
@@ -517,15 +505,19 @@ const report3 = async (request, response) => {
 }
 
 const controlPanel = async (request, response) => {
+  //Grab all publishers
+  //Grab all books
   let publisher = await pool.query('SELECT * FROM public.publisher'); 
   let books = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC');
 
   let successAdd="";
   
+  //Check if we are being given a request for adding books
   if (request.url.includes("?")){
     successAdd = true;
 
     let newbook = {};
+    //parse url
     const info = request.url.split("?")[1].split("&")
     for (q of info)
     {
@@ -565,8 +557,6 @@ const controlPanel = async (request, response) => {
     }catch(err){
       console.log(err.detail);
     }
-    //console.log(phonenumbers.rows);
-    //console.log("pid:"+newbook.pid)
    
     //add to records for:
       //each genre, of every author, of every phonenumber
@@ -596,23 +586,25 @@ const controlPanel = async (request, response) => {
   {
     console.log("Book added.");
   }
-
+  //Render and Serve
   let data = pug.renderFile("controlPanel.pug",{books:books.rows,currUID:request.app.locals.currUID,publisher:publisher.rows,successAdd:successAdd});
   response.statusCode = 200;
   response.send(data);
 }
 
 const removeBook = async (request, response) => {
+  //Query to remove the book
   const removeBookQuery = {
     text: 'DELETE FROM book WHERE isbn =$1',
     values:[request.params.isbn],
   }
+  //Serve back to control panel url for refreshed list of books
   let result = await pool.query(removeBookQuery);
   response.statusCode = 200;
   response.redirect("/controlPanel");
 }
 
-
+//Exports
 module.exports = {
   getUsers,
   getBooks,
