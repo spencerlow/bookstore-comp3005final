@@ -282,7 +282,31 @@ const searchQuery = async (request, response) => {
   let whereString = ""
   if (userInput !== "")
   {
-    whereString = " WHERE "+attribute+" = "+userInput;
+    console.log("           comparing:" + attribute);
+    if (attribute === "ISBN" ||
+        attribute === "bookName" ||
+        attribute === "address" ||
+        attribute === "email" ||
+        attribute === "banking" ||
+        attribute === "storeName" ||
+        attribute === "userBilling" ||
+        attribute === "userShipping" ||
+        attribute === "account_type" ||
+        attribute === "cur_location" ||
+        attribute === "orderBilling" ||
+        attribute === "orderShipping" ||
+        attribute === "phonenumber" ||
+        attribute === "author" ||
+        attribute === "genre")
+        { 
+          console.log("           p1");
+          whereString = " WHERE "+attribute+" = "+ "'" +userInput +"'";
+        }
+        else{
+          console.log("                 p2");
+          whereString = " WHERE "+attribute+" = "+userInput;
+        }
+    
   }
   let queryString;
 
@@ -351,7 +375,7 @@ let q2 = 'SELECT * FROM public.users'
 let q3 = ' ORDER BY UID ASC'
 
 qStr = qStr + " " + table + whereString + " ORDER BY " + attribute + " " + sort;
-//console.log(qStr);
+console.log(qStr);
 
 //text: 'SELECT * FROM public.users ORDER BY UID ASC',
   const query = {  
@@ -361,7 +385,7 @@ qStr = qStr + " " + table + whereString + " ORDER BY " + attribute + " " + sort;
   }
   try{
     let results = await pool.query(query);
-    //console.log(results.rows);
+    console.log(results.rows);
 
     //console.log(results.fields.values());
     let columns = {};
@@ -379,7 +403,8 @@ qStr = qStr + " " + table + whereString + " ORDER BY " + attribute + " " + sort;
     response.send(data);
 
   }catch(err){
-    console.log(err.detail);
+    //console.log(err.detail);
+    console.log(err);
     return;
   }
 }
