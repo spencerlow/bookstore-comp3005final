@@ -136,7 +136,7 @@ const createOrder = async (request, response) => {
   billing = billing.replaceAll("_"," ");
   const orderQuery = {
     text: 'INSERT into public.Orders VALUES ($1,$2,$3,$4,$5)',
-    values: [nextOrderID.rows[0].count,billing,request.app.locals.currUID,billing,shipping],
+    values: [nextOrderID.rows[0].count,"warehouse",request.app.locals.currUID,billing,shipping],
   }
   try{
     await pool.query(orderQuery);
