@@ -1,5 +1,4 @@
 function createOrder(req,res){
-  console.log("Order Submit Clicked");
   let billing = document.getElementById("billing").value;
   let shipping = document.getElementById("shipping").value;
   if (shipping === "")
@@ -21,7 +20,6 @@ function createOrder(req,res){
 }
 
 function changeUser(req,res){
-    console.log("clicked");
     window.location.href = window.location.href + "/changeUser" + "=" + document.getElementById("userSelect").value;
   }
 
@@ -50,12 +48,11 @@ function addUser(req,res){
   shipping = shipping.replaceAll(" ","_");
   billing = billing.replaceAll(" ","_");
 
-  console.log(shipping +"|"+billing);
   window.location.href = window.location.href + "/addUser" + "?" + 
     "shipping="+shipping+"&"+"billing="+billing;
 }
 
-console.log("test");
+
 if(document.getElementById("submit")){
   document.getElementById("submit").onclick = changeUser;
   document.getElementById("addUser").onclick = addUser;
@@ -75,7 +72,6 @@ if (document.getElementById("createBook")){
 
 
 function createBook(req,res){
-  console.log("clicked to create book");
 
   let isbn= document.getElementById("isbn").value;
   let name= document.getElementById("name").value;
@@ -147,7 +143,6 @@ function createBook(req,res){
 }
 
 function search(req,res){
-    console.log("clicked to filter");
 
     let newurl = window.location.href;
 
@@ -184,7 +179,6 @@ function search(req,res){
       newurl = newurl + "&userInput=" + userInput;
     }
 
-    console.log(newurl)
     window.location.href = newurl;
     //+ "=" + document.getElementById("userSelect").value;
   }

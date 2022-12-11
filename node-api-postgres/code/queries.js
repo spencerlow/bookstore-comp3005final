@@ -27,7 +27,6 @@ databaseInit();
 
 const getBooks = async (request, response) => {
   let books = await pool.query('SELECT * FROM public.book ORDER BY isbn ASC');
-  //console.log("BOOKS",books.rows);
   (books.rows) = Promise.all(books.rows.map(async book => {
     const query = {
       text: 'SELECT author,genre FROM public.book_records WHERE isbn = $1',
@@ -82,7 +81,6 @@ const getBookInfo = async (request, response) => {
     if (error) {
       throw error
     }
-    //console.log(results.rows[0])
     let data = pug.renderFile("book.pug",{book:results.rows[0],currUID:request.app.locals.currUID});
     response.statusCode = 200;
     response.send(data)
@@ -134,8 +132,6 @@ const createOrder = async (request, response) => {
   let nextOrderID = await pool.query('SELECT COUNT(*) FROM public.orders');
   let shipping = request.url.split("?")[1].split("&")[0].split("=")[1];
   let billing = request.url.split("?")[1].split("&")[1].split("=")[1];
-  console.log("CreateOrder Shipping: | " + shipping);
-  console.log("CreateOrder Billing | " + billing);
   shipping = shipping.replaceAll("_"," ");
   billing = billing.replaceAll("_"," ");
   const orderQuery = {
@@ -152,7 +148,6 @@ const createOrder = async (request, response) => {
     values: [request.app.locals.currUID], 
   }
   let books = await pool.query(bookQuery);
-  //console.log(books.rows)
   books.rows.forEach (async (element) => {
     const insertContentsQuery = {
       text: 'INSERT into public.order_contents VALUES ($1,$2,$3)',
@@ -164,7 +159,6 @@ const createOrder = async (request, response) => {
     }catch(err){
       console.log(err);
     }
-    //console.log(element,element.isbn)
     const updateStockQuery = {
       text: 'UPDATE public.book SET stockquantity= stockquantity - 1 WHERE isbn=$1',
       values: [element.isbn],
@@ -255,7 +249,6 @@ const addUser = async (request, response) => {
   }
   try{
     let results = await pool.query(query2);
-    console.log("New user created with UID"+nextUID);
   }catch(err){
     console.log(err.detail);
     return;
@@ -490,9 +483,7 @@ const controlPanel = async (request, response) => {
         newbook.genre = q.split("=")[1].split("+");
       }
     }
-    //console.log(newbook);
-    //console.log(newbook.genre.length);
-    //console.log(newbook.author.length);
+
 
     //add to book
     const bookQuery = {
@@ -504,8 +495,7 @@ const controlPanel = async (request, response) => {
     }catch(err){
       console.log(err.detail);
       successAdd = false;
-      //console.log(err);
-      //update book if exists.?
+
     }
 
     //get phonenumbers

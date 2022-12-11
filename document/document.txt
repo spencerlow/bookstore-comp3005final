@@ -24,6 +24,4 @@ Now you have to make a table, and entries for test.
 
 
 
-
-
-https://stackoverflow.com/questions/52104833/how-to-create-table-after-first-creating-a-database-with-node-and-pg
+TIP: If there is a freeze in the console (powershell), go to properties -> Edit Options -> Uncheck Quick Edit Mode
