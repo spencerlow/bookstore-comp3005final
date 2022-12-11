@@ -50,9 +50,12 @@ SELECT * FROM public.users ORDER BY uid ASC
 -- Create new user in users relations with values nextUID,shipping,billing,"customer",nextUID,1
 INSERT into public.users VALUES ($1,$2,$3,$4,$5,$6)
 
---searchQuery -- SPENCER LOOK IDK HOW IT WORKS
-SELECT * FROM public.users ORDER BY UID ASC
-SELECT * FROM public.users
+--searchQuery
+--Queries are dynamic, changes variables depending on user input during searching
+-- Case 1 (User gives userinput)
+SELECT * FROM public.'#aRelation' WHERE '#aAttribute' = '#aUserinput' ORDER BY '#aAttribute' '#aASC/DESC'
+-- Case 2 (User does not give userinput)
+SELECT * FROM public.'#aRelation' ORDER BY '#aAttribute' '#aASC/DESC'
 
 --report1
 -- Query that returns the count for each book (using isbn)
@@ -70,11 +73,20 @@ SELECT book_records.author,  COUNT(book_records.isbn) FROM book_records LEFT JOI
 -- Query that returns count for each time an genre sells a book, uses left join to join book_records with book
 SELECT book_records.genre,  COUNT(book_records.isbn) FROM book_records LEFT JOIN order_contents ON book_records.isbn = order_contents.isbn GROUP BY book_records.genre
 
---controlPanel -- SPENCER
+--controlPanel
 SELECT * FROM public.publisher
 SELECT * FROM public.book ORDER BY isbn ASC
+-- create a new book with the following USER SPECIFIED values
+-- each paraemter matches each $# respectively
+    -- [newbook.isbn,newbook.name,newbook.stockQuantity,newbook.royalty,newbook.lastMonthSales,newbook.page_num,newbook.price,newbook.pid]
 INSERT into public.book VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+-- find all publisher phonenumbers that match the PID of the new book
 SELECT * FROM public.has_numbers WHERE pid = $1
+-- for loop of inserting new book records 
+    -- to ensure each matching PID phone number, each author, and each genre
+    -- combination is added for the new book
+-- each paraemter matches each $# respectively
+    -- values: [newbook.isbn, 0, phonerow.phonenumber, author, genre],
 INSERT into public.book_records VALUES ($1,$2,$3,$4,$5)
 
 --removeBook
