@@ -273,34 +273,34 @@ const searchQuery = async (request, response) => {
 
 
   let whereString = ""
-  if (userInput !== "")
-  {
-    console.log("           comparing:" + attribute);
-    if (attribute === "ISBN" ||
-        attribute === "bookName" ||
-        attribute === "address" ||
-        attribute === "email" ||
-        attribute === "banking" ||
-        attribute === "storeName" ||
-        attribute === "userBilling" ||
-        attribute === "userShipping" ||
-        attribute === "account_type" ||
-        attribute === "cur_location" ||
-        attribute === "orderBilling" ||
-        attribute === "orderShipping" ||
-        attribute === "phonenumber" ||
-        attribute === "author" ||
-        attribute === "genre")
-        { 
-          console.log("           p1");
-          whereString = " WHERE "+attribute+" = "+ "'" +userInput +"'";
-        }
-        else{
-          console.log("                 p2");
-          whereString = " WHERE "+attribute+" = "+userInput;
-        }
+  // if (userInput !== "")
+  // {
+  //   console.log("           comparing:" + attribute);
+  //   if (attribute === "ISBN" ||
+  //       attribute === "bookName" ||
+  //       attribute === "address" ||
+  //       attribute === "email" ||
+  //       attribute === "banking" ||
+  //       attribute === "storeName" ||
+  //       attribute === "userBilling" ||
+  //       attribute === "userShipping" ||
+  //       attribute === "account_type" ||
+  //       attribute === "cur_location" ||
+  //       attribute === "orderBilling" ||
+  //       attribute === "orderShipping" ||
+  //       attribute === "phonenumber" ||
+  //       attribute === "author" ||
+  //       attribute === "genre")
+  //       { 
+  //         console.log("           p1");
+  //         whereString = " WHERE "+attribute+" = "+ "'" +userInput +"'";
+  //       }
+  //       else{
+  //         console.log("                 p2");
+  //         whereString = " WHERE "+attribute+" = "+userInput;
+  //       }
     
-  }
+  // }
   let queryString;
 
   //SELECT stockquantity,isbn,pid,lastmonthsales FROM public.book WHERE isbn=$1
@@ -362,6 +362,37 @@ const searchQuery = async (request, response) => {
     console.log("Searched non-existing attribute");
     return;
   }
+
+  userInput = userInput.replaceAll("+"," ")
+  if (userInput !== "")
+  {
+    console.log("           comparing:" + attribute);
+    if (attribute === "ISBN" ||
+        attribute === "name" ||
+        attribute === "address" ||
+        attribute === "email" ||
+        attribute === "banking" ||
+        attribute === "name" ||
+        attribute === "userBilling" ||
+        attribute === "userShipping" ||
+        attribute === "account_type" ||
+        attribute === "cur_location" ||
+        attribute === "orderBilling" ||
+        attribute === "orderShipping" ||
+        attribute === "phoneNumber" ||
+        attribute === "author" ||
+        attribute === "genre")
+        { 
+          console.log("           p1");
+          whereString = " WHERE "+attribute+" = "+ "'" +userInput +"'";
+        }
+        else{
+          console.log("                 p2");
+          whereString = " WHERE "+attribute+" = "+userInput;
+        }
+    
+  }
+
 
 let q1 = 'SELECT * FROM public.users ORDER BY UID ASC'
 let q2 = 'SELECT * FROM public.users'
