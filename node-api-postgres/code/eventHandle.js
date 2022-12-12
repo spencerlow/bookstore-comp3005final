@@ -1,3 +1,6 @@
+//handles request to place a new order
+//grabs userInput with billing and shipping
+//from webpage and notifies the server to create the order and redirects user
 function createOrder(req,res){
   let billing = document.getElementById("billing").value;
   let shipping = document.getElementById("shipping").value;
@@ -18,21 +21,17 @@ function createOrder(req,res){
   window.location.href ="/createOrder" + "?" + 
     "shipping="+shipping+"&"+"billing="+billing;
 }
-
+//handles request to change user
+//grabs userInput for specified UID and notifies the server to change user and redirects user
 function changeUser(req,res){
     window.location.href = window.location.href + "/changeUser" + "=" + document.getElementById("userSelect").value;
   }
 
-
+//handles request to add a new user
+//grabs userInput for specified shipping and billing and notifies server to add a new user and redirects user
 function addUser(req,res){
-  //if === is true, alert
   let shipping = document.getElementById("shipping").value;
   let billing = document.getElementById("billing").value;
-  // if (shipping === billing)
-  // {
-  //   alert("the shipping and billing cannot be the same);
-  //   return;
-  // }
   if (shipping === "")
   {
     alert("shipping address must be added")
@@ -52,7 +51,7 @@ function addUser(req,res){
     "shipping="+shipping+"&"+"billing="+billing;
 }
 
-
+//button click notifier
 if(document.getElementById("submit")){
   document.getElementById("submit").onclick = changeUser;
   document.getElementById("addUser").onclick = addUser;
@@ -61,16 +60,19 @@ else if(document.getElementById("checkoutSubmit")){
   document.getElementById("checkoutSubmit").onclick = createOrder;
 }
 
-//does not trigger if placed in conditions
+//button click notifier
 if (document.getElementById("filter")){
   document.getElementById("filter").onclick = search;
 }
+//button click notifier
 if (document.getElementById("createBook")){
   document.getElementById("createBook").onclick = createBook;
 }
 
 
-
+//handles request to create a bew book
+//grabs userInput for specified isbn,name,stockquantity,royalty,lastmonthsales,page_num,price,pid,author,genre
+//and notifies server to add the new book if possible with specified values and redirects user
 function createBook(req,res){
 
   let isbn= document.getElementById("isbn").value;
@@ -116,11 +118,6 @@ function createBook(req,res){
   genre = genre.trim();
   genre = genre.replaceAll(",","+");
 
-
-  // let newurl = window.location.href.split("/controlPanel")[0]+"/addBook?"+
-  // "isbn="+isbn+"&name="+name+"&stockQuantity="+stockQuantity+
-  // "&royalty="+royalty+"&lastMonthSales="+lastMonthSales+"&page_num="+
-  // page_num+"&price="+price+"&pid="+pid+"&author="+author+"&genre="+genre;
   let newurl = window.location.href
   if (newurl.includes("?"))
   {
@@ -142,6 +139,11 @@ function createBook(req,res){
   window.location.href = newurl;
 }
 
+/*
+handles user requested search queries from browser
+and creates a new url with the query to send to the server for it to
+use and respond with the proper data from database
+*/
 function search(req,res){
 
     let newurl = window.location.href;
@@ -180,7 +182,6 @@ function search(req,res){
     }
 
     window.location.href = newurl;
-    //+ "=" + document.getElementById("userSelect").value;
   }
 
 
