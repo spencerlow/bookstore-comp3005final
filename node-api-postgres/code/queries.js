@@ -279,7 +279,13 @@ const addUser = async (request, response) => {
   response.status(200).redirect("http://localhost:3000/users");
 }
 
-
+/*
+Search query
+1. Grab user input by splitting url
+2. build the string that PG query will use (qSTR)
+3. whereString is if a user includes a typed search
+4. table is the table the search will belong to
+*/
 const searchQuery = async (request, response) => {
   // Parse for attr, sort, and input
   let attribute = request.url.split("?")[1].split("&")[0].split("=")[1];
@@ -297,6 +303,7 @@ const searchQuery = async (request, response) => {
   let qStr = "SELECT * FROM"
   let table = ""
 
+  //find table and replace unique attributes to match table names
   if (attribute === "ISBN" ||
     attribute === "stockQuantity" ||
     attribute === "royalty" ||
@@ -313,8 +320,10 @@ const searchQuery = async (request, response) => {
   attribute === "orderShipping"){
     table = "public.orders";
   }
-  else if(attribute === "orderQuantity"){
+  else if(attribute === "orderQuantity" ||
+          attribute === "orderID_contents"){
     table = "public.order_contents";
+    if (attribute === "orderID_contents"){attribute = "orderID"};
   }
   else if (attribute === "pID" ||
   attribute === "address" ||
@@ -348,10 +357,13 @@ const searchQuery = async (request, response) => {
     return;
   }
 
+  //clean up userinput
   userInput = userInput.replaceAll("+"," ")
+
+  //create the WHERE string with userinput
   if (userInput !== "")
   {
-    console.log("           comparing:" + attribute);
+    //console.log("           comparing:" + attribute);
     if (attribute === "ISBN" ||
         attribute === "name" ||
         attribute === "address" ||
@@ -368,28 +380,24 @@ const searchQuery = async (request, response) => {
         attribute === "author" ||
         attribute === "genre")
         { 
-          console.log("           p1");
+          //console.log("           p1");
           whereString = " WHERE "+attribute+" = "+ "'" +userInput +"'";
         }
         else{
-          console.log("                 p2");
+          //console.log("                 p2");
           whereString = " WHERE "+attribute+" = "+userInput;
         }
     
   }
 
 
-let q1 = 'SELECT * FROM public.users ORDER BY UID ASC'
-let q2 = 'SELECT * FROM public.users'
-let q3 = ' ORDER BY UID ASC'
+// let q1 = 'SELECT * FROM public.users ORDER BY UID ASC'
+// let q2 = 'SELECT * FROM public.users'
+// let q3 = ' ORDER BY UID ASC'
 
 //build query string
 qStr = qStr + " " + table + whereString + " ORDER BY " + attribute + " " + sort;
-
-//text: 'SELECT * FROM public.users ORDER BY UID ASC',
   const query = {  
-    // text: 'SELECT * FROM $1 ORDER BY $2,$3',
-    // values: ['public.users','UID','ASC'],
     text: qStr,
   }
   try{

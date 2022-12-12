@@ -2,8 +2,10 @@
 //grabs userInput with billing and shipping
 //from webpage and notifies the server to create the order and redirects user
 function createOrder(req,res){
+  //get user input
   let billing = document.getElementById("billing").value;
   let shipping = document.getElementById("shipping").value;
+  //reject empty values
   if (shipping === "")
   {
     alert("Shipping address must be added")
@@ -14,24 +16,30 @@ function createOrder(req,res){
     alert("Billing address must be added")
     return;
   }
+  //clean userinput
   shipping = shipping.trim();
   billing = billing.trim();
+  //clean userinput to be url friendly
   shipping = shipping.replaceAll(" ","_");
   billing = billing.replaceAll(" ","_");
+  //redirect user/notify server
   window.location.href ="/createOrder" + "?" + 
     "shipping="+shipping+"&"+"billing="+billing;
 }
 //handles request to change user
 //grabs userInput for specified UID and notifies the server to change user and redirects user
 function changeUser(req,res){
+  //redirect user and notify server
     window.location.href = window.location.href + "/changeUser" + "=" + document.getElementById("userSelect").value;
   }
 
 //handles request to add a new user
 //grabs userInput for specified shipping and billing and notifies server to add a new user and redirects user
 function addUser(req,res){
+  //grab user input
   let shipping = document.getElementById("shipping").value;
   let billing = document.getElementById("billing").value;
+  //reject empty values
   if (shipping === "")
   {
     alert("shipping address must be added")
@@ -42,11 +50,13 @@ function addUser(req,res){
     alert("shipping address must be added")
     return;
   }
+  //clean user input
   shipping = shipping.trim();
   billing = billing.trim();
+  //clean user input to be url friendly
   shipping = shipping.replaceAll(" ","_");
   billing = billing.replaceAll(" ","_");
-
+  //redirect user and notfiy server
   window.location.href = window.location.href + "/addUser" + "?" + 
     "shipping="+shipping+"&"+"billing="+billing;
 }
@@ -75,6 +85,7 @@ if (document.getElementById("createBook")){
 //and notifies server to add the new book if possible with specified values and redirects user
 function createBook(req,res){
 
+  //get userinput
   let isbn= document.getElementById("isbn").value;
   let name= document.getElementById("name").value;
   let stockQuantity= document.getElementById("stockQuantity").value;
@@ -86,7 +97,7 @@ function createBook(req,res){
   let author= document.getElementById("author").value;
   let genre= document.getElementById("genre").value;
   
-
+//reject empty values
   if (isbn === "" ||
       name === "" ||
       stockQuantity === "" ||
@@ -102,6 +113,7 @@ function createBook(req,res){
     return;
   }
 
+  //clean userinput
   isbn = isbn.trim();
   name = name.trim();
   stockQuantity = stockQuantity.trim();
@@ -111,6 +123,7 @@ function createBook(req,res){
   price = price.trim();
   pid = pid.trim();
   
+  //clean userinput and set them to be url friendly
   author = author.trim();
   author = author.replaceAll(",","_");
   author = author.replaceAll("&","+");
@@ -118,6 +131,7 @@ function createBook(req,res){
   genre = genre.trim();
   genre = genre.replaceAll(",","+");
 
+  //redirect user depending on URL
   let newurl = window.location.href
   if (newurl.includes("?"))
   {
@@ -135,7 +149,7 @@ function createBook(req,res){
   }
    
 
-
+//redirect user and notify server
   window.location.href = newurl;
 }
 
@@ -146,8 +160,10 @@ use and respond with the proper data from database
 */
 function search(req,res){
 
+  //create a new temp url
     let newurl = window.location.href;
 
+    //clean the url
     if (newurl.includes("search"))
     {
       newurl = window.location.href.split("/search")[0] + "/filter?"
@@ -157,9 +173,11 @@ function search(req,res){
       newurl = window.location.href.split("/filter?")[0] + "/filter?"
     }
 
+    //get user input
     let attribute = document.getElementById("attributes").value;
     let sort = document.getElementById("ordering").value;
 
+    //reject empty values
     if (attribute === "")
     {
       alert("must select attribute to search with");
@@ -171,8 +189,10 @@ function search(req,res){
       return;
     }
 
+    //build new url
     newurl = newurl + "attribute=" + attribute + "&" + "sort=" + sort;
 
+    //include userinput if not empty
     if (document.getElementById("userInput").value !== "")
     {
       let userInput = document.getElementById("userInput").value;
@@ -181,6 +201,7 @@ function search(req,res){
       newurl = newurl + "&userInput=" + userInput;
     }
 
+    //redirect user and notify server
     window.location.href = newurl;
   }
 

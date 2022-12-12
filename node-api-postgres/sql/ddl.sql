@@ -52,7 +52,7 @@ create table IF NOT EXISTS Cart
 		cartQuantity INT NOT NULL,
 		primary key (UID,ISBN),
 		foreign key (UID) references Users (UID),
-		foreign key (ISBN) references Book (ISBN)
+		foreign key (ISBN) references Book (ISBN) ON DELETE CASCADE  --DELETE WITH CASCADE
     );
 
 create table IF NOT EXISTS Orders
@@ -72,7 +72,7 @@ create table IF NOT EXISTS Order_contents
 		ISBN VARCHAR(11) NOT NULL,
 		orderQuantity INT NOT NULL,
 		primary key (orderID,ISBN),
-		foreign key (orderID) references Orders (orderID),
+		foreign key (orderID) references Orders (orderID), 
 		foreign key (ISBN) references Book (ISBN) ON DELETE CASCADE  --DELETE WITH CASCADE
     );
 
