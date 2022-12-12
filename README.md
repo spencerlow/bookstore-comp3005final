@@ -1,5 +1,11 @@
 <img align="left" alt="logo" width="30" src="./node-api-postgres/code/favicon.ico"><h2> # bookstore-comp3005final </h2>
 
+Folder | Description
+------------ | -------------
+Diagrams | Relational and Database schema files
+node-api-postgres | contains the server, our code, **and sql files**
+screenshots | owner vs customer view of the site
+
 <h3>
 
 Members | Github
